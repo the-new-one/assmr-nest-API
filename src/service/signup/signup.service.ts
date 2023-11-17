@@ -133,6 +133,10 @@ export class SignupService {
             password: organizationName,
           })
           .execute();
+        const registrationDate = new Date();
+        const expirationnDate = new Date();
+        expirationnDate.setMonth(registrationDate.getMonth() + 1);
+        const subscriptionExpiry = expirationnDate;
 
         this.companyEntity
           .createQueryBuilder('company')
@@ -158,9 +162,10 @@ export class SignupService {
           .values({
             userId: userCompany.raw.insertId,
             maxNoToPost: 1000,
-            subscription_date: new Date(),
+            subscription_date: registrationDate,
             userType,
             isSubscribed: true,
+            subscription_expiry: subscriptionExpiry,
           })
           .execute();
 

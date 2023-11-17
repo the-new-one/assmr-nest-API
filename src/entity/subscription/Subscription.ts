@@ -8,12 +8,14 @@ export class UserSubscription {
   userId: number;
   @Column()
   maxNoToPost: number;
-  @Column()
-  subscription_date: Date;
   @Column({
     length: 20,
   })
   userType: string;
   @Column()
   isSubscribed: boolean;
+  @Column()
+  subscription_date: Date;
+  @Column()
+  subscription_expiry: Date;
 }

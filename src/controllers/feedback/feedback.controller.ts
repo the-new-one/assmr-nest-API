@@ -25,4 +25,8 @@ export class FeedbackController {
   ): Promise<ResponseData<any>> {
     return this.feedBackService.getRating(activeFilterType);
   }
+  @Get('/company-rating/:companyID')
+  getCompanyRating(@Param() param: { companyID: number }) {
+    return this.feedBackService.getCompanyRating(param);
+  }
 }
