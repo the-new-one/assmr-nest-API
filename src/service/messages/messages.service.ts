@@ -177,7 +177,7 @@ export class MessagesService {
       ])
       .getRawMany();
     // .getSql();
-      console.log(messageList);
+    console.log(messageList);
     return {
       code: 200,
       status: 1,

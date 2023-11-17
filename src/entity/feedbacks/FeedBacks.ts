@@ -38,5 +38,7 @@ export class Rating {
   @Column()
   userId: number; // commenter ID or their userID
   @Column()
+  ratedTo: number;
+  @Column()
   ratingDate: Date;
 }

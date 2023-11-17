@@ -54,8 +54,9 @@ export class FeedbacksService {
     };
   }
   async createRating(param: any): Promise<ResponseData<string>> {
-    // console.log(param);
-    const { userID, comment, userFullName, ratingStar, sendRateTo } = param;
+    const { userID, comment, userFullName, ratingStar, sendRateTo, ratedTo } =
+      param;
+    console.log(param);
     let message: string = '';
     switch (sendRateTo) {
       case 'rate-assmr-app':
@@ -69,6 +70,7 @@ export class FeedbacksService {
             ratingStar,
             userId: userID,
             sendRatingTo: sendRateTo,
+            ratedTo: 1000,
             ratingDate: new Date(),
           })
           .execute();
@@ -85,6 +87,7 @@ export class FeedbacksService {
             ratingStar,
             userId: userID,
             sendRatingTo: sendRateTo,
+            ratedTo: ratedTo,
             ratingDate: new Date(),
           })
           .execute();
@@ -121,13 +124,23 @@ export class FeedbacksService {
         ratingResult = assmrList;
         break;
       case 'rate-a-company':
+        const subQ = await this.ratingEntity.createQueryBuilder('rating');
         const companyList = await this.companyEntity
           .createQueryBuilder('company')
           .innerJoin(User, 'user')
           .where('company.userId = user.id')
-          .select(['user', 'company'])
+          .select([
+            'user',
+            'company',
+            `(${subQ
+              .select('COUNT(rating.ratedTo)')
+              .where('company.id = rating.ratedTo')
+              .groupBy('ratedTo')
+              .getSql()}) as noOfPeopleWhoRate`,
+          ])
           .getRawMany();
         ratingResult = companyList;
+        console.log(ratingResult);
         break;
       default:
         console.log('No activeFilterType');
@@ -138,6 +151,27 @@ export class FeedbacksService {
       status: 0,
       message: 'Rating',
       data: ratingResult,
+    };
+  }
+  async getCompanyRating(param: {
+    companyID: number;
+  }): Promise<ResponseData<any>> {
+    const { companyID } = param;
+    const companyRating = await this.companyEntity
+      .createQueryBuilder('company')
+      .innerJoin(Rating, 'rating')
+      .innerJoin(User, 'user')
+      .where('company.id =:companyID', { companyID })
+      .andWhere('rating.ratedTo = company.id')
+      .andWhere('user.id = rating.userId')
+      .select(['rating', 'user'])
+      .getRawMany();
+    console.log(companyRating);
+    return {
+      code: 200,
+      status: 1,
+      message: 'Company ratings.',
+      data: companyRating,
     };
   }
 }
