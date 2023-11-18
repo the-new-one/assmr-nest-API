@@ -191,4 +191,7 @@ export class AdminService {
       data: concatResult,
     };
   }
+  async getAdminGraphs() {
+
+  }
 }

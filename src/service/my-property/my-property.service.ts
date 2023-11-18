@@ -14,6 +14,7 @@ import {
   Assumption,
 } from 'src/entity/property-assumption/PropertyAssumption';
 import { User } from 'src/entity/signup/signup.entity';
+import { UserSubscription } from 'src/entity/subscription/Subscription';
 import {
   AssumerListModel,
   MyJewelryPropertyModel,
@@ -28,6 +29,7 @@ import {
   RealestateOwnerModel,
   VehicleOwnerModel,
 } from 'src/models/user/UserModel';
+import { checkSubscriptionEveryItemPost } from 'src/utils/utils';
 import { In, Repository } from 'typeorm';
 
 @Injectable()
@@ -49,6 +51,7 @@ export class MyPropertyService {
     @InjectRepository(Lot) private lotEntity: Repository<Lot>,
     @InjectRepository(Property) private propertyEntity: Repository<Property>,
     @InjectRepository(Jewelry) private jewelryEntity: Repository<Jewelry>,
+    @InjectRepository(UserSubscription) private userSubscription: Repository<UserSubscription>,
   ) {}
   async uploadVehicleProperty(
     uploaderInfo: VehicleOwnerModel,
@@ -78,6 +81,15 @@ export class MyPropertyService {
       propertyId: 0,
     };
 
+    if (!await checkSubscriptionEveryItemPost(this.userSubscription, activeUser.id)) {
+      return {
+        code: 401,
+        status: 1,
+        message: 'Please subscribe to post a new property.',
+        data: [],
+      }
+    }
+    
     const property = await this.propertyEntity
       .createQueryBuilder('property')
       .insert()
@@ -108,7 +120,12 @@ export class MyPropertyService {
         vehicleFrontIMG: JSON.stringify(pathLists),
       })
       .execute();
-
+      const rec = this.userSubscription.decrement({
+        userId: activeUser.id,
+      }, 'maxNoToPost', 1) // update the maxNoToPost every time the user post a new property
+      
+      
+      
     const response: ResponseData<[]> = {
       code: 1,
       status: 200,
