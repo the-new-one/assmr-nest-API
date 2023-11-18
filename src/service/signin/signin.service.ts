@@ -84,9 +84,25 @@ export class SigninService {
           select: {
             userType: true,
             isSubscribed: true,
+            subscription_date: true,
+            subscription_expiry: true,
           },
         });
 
+        if (subscriptionInfo.userType === 'company') {
+          const d1 = new Date(subscriptionInfo.subscription_expiry);
+          const d2 = new Date();
+          if (d2 > d1) {
+            subscriptionInfo.isSubscribed = false;
+          }
+        }
+        else if (subscriptionInfo.userType === 'individual-user') {
+          const d1 = new Date(subscriptionInfo.subscription_expiry);
+          const d2 = new Date();
+          if (d2 > d1 && subscriptionInfo.isSubscribed) {
+            subscriptionInfo.isSubscribed = false;
+          }
+        }
         return {
           code: 0,
           status: 200,
@@ -99,7 +115,7 @@ export class SigninService {
             lastname: result.lastname,
             address: `${result.municipality}, ${result.province}, ${result.barangay}`,
             contactno: result.contactno,
-            subscription: subscriptionInfo,
+            subscription: subscriptionInfo ?? false,
             image: result.image,
           },
         };
