@@ -142,7 +142,7 @@ export class FeedbacksService {
           ])
           .getRawMany();
         ratingResult = companyList;
-        console.log(ratingResult);
+        // console.log(ratingResult);
         break;
       default:
         console.log('No activeFilterType');

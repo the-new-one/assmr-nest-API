@@ -85,12 +85,12 @@ export class SigninService {
             userId: true,
             userType: true,
             isSubscribed: true,
+            subscription_date: true,
+            subscription_expiry: true,
           },
         });
         // console.log(subscriptionInfo);
 
-<<<<<<< Updated upstream
-=======
         if (subscriptionInfo.userType === 'company') {
           const d1 = new Date(subscriptionInfo.subscription_expiry);
           const d2 = new Date();
@@ -104,7 +104,6 @@ export class SigninService {
             subscriptionInfo.isSubscribed = false;
           }
         }
->>>>>>> Stashed changes
         return {
           code: 0,
           status: 200,
@@ -117,7 +116,7 @@ export class SigninService {
             lastname: result.lastname,
             address: `${result.municipality}, ${result.province}, ${result.barangay}`,
             contactno: result.contactno,
-            subscription: subscriptionInfo,
+            subscription: subscriptionInfo ?? false,
             image: result.image,
           },
         };

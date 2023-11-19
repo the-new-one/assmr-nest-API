@@ -16,6 +16,7 @@ import {
   Realeststate,
 } from 'src/entity/my-property/my-realestate';
 import { Property } from 'src/entity/my-property/property';
+import { UserSubscription } from 'src/entity/subscription/Subscription';
 @Module({
   controllers: [MyPropertyController],
   providers: [MyPropertyService],
@@ -31,7 +32,8 @@ import { Property } from 'src/entity/my-property/property';
       HouseAndLot,
       House,
       Lot,
-      Property
+      Property,
+      UserSubscription,
     ]),
   ],
   exports: [TypeOrmModule],
