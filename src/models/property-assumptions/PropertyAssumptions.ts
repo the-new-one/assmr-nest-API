@@ -42,13 +42,20 @@ export interface PropertyAssumptionModel {
 export interface VehicleAssumptionModel {
   vehicle_id: number;
   vehicle_userId: number;
+  vehicle_color: string;
   vehicle_brand: string;
   vehicle_model: string;
+  vehicle_milage: string;
+  vehicle_condition: string;
+  vehicle_issue: string;
   vehicle_owner: string;
   vehicle_downpayment: string;
   vehicle_location: string;
   vehicle_installmentpaid: string;
   vehicle_installmentduration: string;
+  vehicle_remainingMonthsToPaid: string;
+  vehicle_assumePrice: string;
+  vehicle_monthlyPayment: string;
   vehicle_delinquent: string;
   vehicle_description: string;
   vehicle_isDropped: string;

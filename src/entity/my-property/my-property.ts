@@ -18,23 +18,39 @@ export class Vehicle {
   @Column()
   userId: number;
   @Column()
+  color: string;
+  @Column()
   brand: string;
   @Column()
   model: string;
   @Column()
+  milage: string;
+  @Column()
+  condition: string;
+  @Column()
+  issue?: string;
+  @Column()
   owner: string;
   @Column()
-  downpayment: string;
-  @Column()
   location: string;
+  @Column()
+  downpayment: string;
   @Column()
   installmentpaid: string;
   @Column()
   installmentduration: string;
   @Column()
+  remainingMonthsToPaid: string;
+  @Column()
+  assumePrice: string;
+  @Column()
+  monthlyPayment: string;
+  @Column()
   delinquent: string;
   @Column()
   description: string;
+  @Column()
+  modeOfPayment: string;
   @Column({
     length: 5,
   })

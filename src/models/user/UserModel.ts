@@ -31,15 +31,23 @@ export interface ActiveUserCredentialsModel {
 
 export interface VehicleOwnerModel {
   email: string;
+  color: string;
   brand: string;
   model: string;
+  milage: string;
+  condition: string;
+  issue?: string;
   owner: string;
-  downpayment: string;
   location: string;
+  downpayment: string;
   installmentpaid: string;
   installmentduration: string;
+  remainingMonthsToPaid: string;
+  assumePrice: string;
+  monthlyPayment: string;
   delinquent: string;
   description: string;
+  modeOfPayment: string;
 } // used for uploading vehicle property
 
 export interface UpdateUserInformationModel extends UserSigninModel {
@@ -66,6 +74,10 @@ export interface JewelryOwnerModel {
   karat: string;
   grams: string;
   material: string;
+  modeOfPayment: string;
+  remainingMonthsToPaid: string;
+  assumePrice: string;
+  monthlyPayment: string;
 }
 export interface RealestateOwnerModel {
   email: string;
@@ -78,4 +90,8 @@ export interface RealestateOwnerModel {
   installmentduration: string;
   delinquent: string;
   description: string;
+  modeOfPayment: string;
+  remainingMonthsToPaid: string;
+  assumePrice: string;
+  monthlyPayment: string;
 }

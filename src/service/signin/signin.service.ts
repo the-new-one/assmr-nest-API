@@ -82,11 +82,29 @@ export class SigninService {
             userId: result.id,
           },
           select: {
+            userId: true,
             userType: true,
             isSubscribed: true,
           },
         });
+        // console.log(subscriptionInfo);
 
+<<<<<<< Updated upstream
+=======
+        if (subscriptionInfo.userType === 'company') {
+          const d1 = new Date(subscriptionInfo.subscription_expiry);
+          const d2 = new Date();
+          if (d2 > d1) {
+            subscriptionInfo.isSubscribed = false;
+          }
+        } else if (subscriptionInfo.userType === 'individual-user') {
+          const d1 = new Date(subscriptionInfo.subscription_expiry);
+          const d2 = new Date();
+          if (d2 > d1 && subscriptionInfo.isSubscribed) {
+            subscriptionInfo.isSubscribed = false;
+          }
+        }
+>>>>>>> Stashed changes
         return {
           code: 0,
           status: 200,

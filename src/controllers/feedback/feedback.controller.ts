@@ -29,4 +29,10 @@ export class FeedbackController {
   getCompanyRating(@Param() param: { companyID: number }) {
     return this.feedBackService.getCompanyRating(param);
   }
+  @Post('/update-subscription')
+  updateUserSubscription(
+    @Body() param: { newExpirationDate: Date; userId: number },
+  ) {
+    return this.feedBackService.updateUserSubscription(param);
+  }
 }

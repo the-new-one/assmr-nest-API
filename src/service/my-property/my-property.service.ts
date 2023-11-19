@@ -49,6 +49,11 @@ export class MyPropertyService {
     @InjectRepository(Lot) private lotEntity: Repository<Lot>,
     @InjectRepository(Property) private propertyEntity: Repository<Property>,
     @InjectRepository(Jewelry) private jewelryEntity: Repository<Jewelry>,
+<<<<<<< Updated upstream
+=======
+    @InjectRepository(UserSubscription)
+    private userSubscription: Repository<UserSubscription>,
+>>>>>>> Stashed changes
   ) {}
   async uploadVehicleProperty(
     uploaderInfo: VehicleOwnerModel,
@@ -65,19 +70,44 @@ export class MyPropertyService {
 
     const uploadInfo = {
       userId: activeUser.id,
+      color: uploaderInfo.color,
       brand: uploaderInfo.brand,
       model: uploaderInfo.model,
+      milage: uploaderInfo.milage,
+      condition: uploaderInfo.condition,
+      issue: uploaderInfo.issue,
       owner: uploaderInfo.owner,
-      downpayment: uploaderInfo.downpayment,
       location: uploaderInfo.location,
+      downpayment: uploaderInfo.downpayment,
       installmentpaid: uploaderInfo.installmentpaid,
       installmentduration: uploaderInfo.installmentduration,
+      remainingMonthsToPaid: uploaderInfo.remainingMonthsToPaid,
+      assumePrice: uploaderInfo.assumePrice,
+      monthlyPayment: uploaderInfo.monthlyPayment,
       delinquent: uploaderInfo.delinquent,
       description: uploaderInfo.description,
+      modeOfPayment: uploaderInfo.modeOfPayment,
       isDropped: '0',
       propertyId: 0,
     };
 
+<<<<<<< Updated upstream
+=======
+    if (
+      !(await checkSubscriptionEveryItemPost(
+        this.userSubscription,
+        activeUser.id,
+      ))
+    ) {
+      return {
+        code: 401,
+        status: 1,
+        message: 'Please subscribe to post a new property.',
+        data: [],
+      };
+    }
+
+>>>>>>> Stashed changes
     const property = await this.propertyEntity
       .createQueryBuilder('property')
       .insert()
@@ -108,6 +138,16 @@ export class MyPropertyService {
         vehicleFrontIMG: JSON.stringify(pathLists),
       })
       .execute();
+<<<<<<< Updated upstream
+=======
+    this.userSubscription.decrement(
+      {
+        userId: activeUser.id,
+      },
+      'maxNoToPost',
+      1,
+    ); // update the maxNoToPost every time the user post a new property
+>>>>>>> Stashed changes
 
     const response: ResponseData<[]> = {
       code: 1,
@@ -170,7 +210,7 @@ export class MyPropertyService {
       .leftJoinAndSelect('vehicle.vehicleImages', 'vehicleIMG')
       .where('vehicle.id =:vehicleID', { vehicleID })
       .getOne();
-
+    // console.log(vehicle);
     return {
       code: 200,
       status: 1,
@@ -183,13 +223,21 @@ export class MyPropertyService {
   ): Promise<ResponseData<string>> {
     const {
       id,
+      color,
       brand,
       model,
+      milage,
+      condition,
+      issue,
       owner,
       downpayment,
       location,
       installmentpaid,
       installmentduration,
+      remainingMonthsToPaid,
+      assumePrice,
+      monthlyPayment,
+      modeOfPayment,
       delinquent,
       description,
     }: UpdateVehicleInformationModel = vehicleInfo;
@@ -198,13 +246,21 @@ export class MyPropertyService {
       .createQueryBuilder('vehicle')
       .update(Vehicle)
       .set({
+        color,
         brand,
         model,
+        milage,
+        condition,
+        issue,
         owner,
         downpayment,
         location,
         installmentpaid,
         installmentduration,
+        remainingMonthsToPaid,
+        assumePrice,
+        monthlyPayment: monthlyPayment,
+        modeOfPayment,
         delinquent,
         description,
       })
@@ -358,6 +414,10 @@ export class MyPropertyService {
       karat,
       grams,
       material,
+      modeOfPayment,
+      remainingMonthsToPaid,
+      assumePrice,
+      monthlyPayment,
     } = uploaderInfo;
 
     const user = await this.userEntity
@@ -393,6 +453,10 @@ export class MyPropertyService {
         jewelry_grams: grams,
         jewelry_material: material,
         jewelry_image: JSON.stringify(pathLists),
+        modeOfPayment: modeOfPayment,
+        remainingMonthsToPaid,
+        assumePrice,
+        monthlyPayment,
         isDropped: '0',
         propertyId: property.raw.insertId,
       })
@@ -475,6 +539,10 @@ export class MyPropertyService {
       karat,
       grams,
       material,
+      modeOfPayment,
+      remainingMonthsToPaid,
+      assumePrice,
+      monthlyPayment,
     } = jewelryInfo;
     this.Jewelry.createQueryBuilder('jewelry')
       .update(Jewelry)
@@ -491,6 +559,10 @@ export class MyPropertyService {
         jewelry_karat: karat,
         jewelry_grams: grams,
         jewelry_material: material,
+        modeOfPayment: modeOfPayment,
+        remainingMonthsToPaid,
+        assumePrice,
+        monthlyPayment,
       })
       .where('id =:jewelryId', { jewelryId: id })
       .execute();
@@ -615,6 +687,10 @@ export class MyPropertyService {
         installmentduration,
         delinquent,
         description,
+        modeOfPayment,
+        remainingMonthsToPaid,
+        assumePrice,
+        monthlyPayment,
       } = uploaderInfo;
 
       const user = await this.userEntity
@@ -646,6 +722,10 @@ export class MyPropertyService {
           installmentduration,
           delinquent,
           description,
+          modeOfPayment: modeOfPayment,
+          remainingMonthsToPaid,
+          assumePrice,
+          monthlyPayment,
           isDropped: '0',
           userId: () => (user.userId = id),
           propertyId: property.raw.insertId,
@@ -758,6 +838,10 @@ export class MyPropertyService {
       developer,
       id,
       // realestateID,
+      modeOfPayment,
+      remainingMonthsToPaid,
+      assumePrice,
+      monthlyPayment,
     } = realestateInfo;
 
     this.realestateEntity
@@ -771,6 +855,10 @@ export class MyPropertyService {
         delinquent,
         description,
         downpayment,
+        modeOfPayment,
+        remainingMonthsToPaid,
+        assumePrice,
+        monthlyPayment,
       })
       .where('id =:realestateID', { realestateID: id })
       .execute();
@@ -889,5 +977,28 @@ export class MyPropertyService {
       message: 'Assumer details',
       data: assumerDetail,
     };
+  }
+  async acceptCertainAssumer(param: { assumerID: number; propertyID: number }) {
+    const { assumerID, propertyID } = param;
+    this.assumptionEntity
+      .createQueryBuilder('assumption')
+      .update(Assumption)
+      .set({
+        isAcceptedAssumer: 1,
+      })
+      .where('assumerId =: assumerID', { assumerID })
+      .andWhere('propertyId =:propertyId', { propertyID })
+      .execute();
+
+    this.assumptionEntity
+      .createQueryBuilder('assumption')
+      .update(Assumption)
+      .set({
+        isActive: '0',
+        isAcceptedAssumer: 0,
+      })
+      .where('propertyId =:propertyID', { propertyID })
+      .andWhere('isActive = 1')
+      .execute();
   }
 }
