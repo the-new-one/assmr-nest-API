@@ -6,6 +6,9 @@ async function bootstrap() {
 
   app.use(express.static('public'));
   app.use('/public', express.static('public'));
+  app.enableCors({
+    origin: ['http://localhost:3000'],
+  });
   await app.listen(1000);
 }
 bootstrap();
