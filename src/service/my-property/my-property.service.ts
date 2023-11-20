@@ -134,10 +134,6 @@ export class MyPropertyService {
         vehicleFrontIMG: JSON.stringify(pathLists),
       })
       .execute();
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
     this.userSubscription.decrement(
       {
         userId: activeUser.id,
@@ -975,14 +971,10 @@ export class MyPropertyService {
       data: assumerDetail,
     };
   }
-<<<<<<< Updated upstream
   async acceptCertainAssumer(param: {
     assumerID: number;
     propertyID: number;
   }): Promise<ResponseData<string>> {
-=======
-  async acceptCertainAssumer(param: { assumerID: number; propertyID: number }) {
->>>>>>> Stashed changes
     const { assumerID, propertyID } = param;
     this.assumptionEntity
       .createQueryBuilder('assumption')
@@ -990,13 +982,8 @@ export class MyPropertyService {
       .set({
         isAcceptedAssumer: 1,
       })
-<<<<<<< Updated upstream
       .where('assumerId =:assumerId', { assumerId: assumerID })
       .andWhere('propertyId =:propertyId', { propertyId: propertyID })
-=======
-      .where('assumerId =: assumerID', { assumerID })
-      .andWhere('propertyId =:propertyId', { propertyID })
->>>>>>> Stashed changes
       .execute();
 
     this.assumptionEntity
@@ -1007,7 +994,6 @@ export class MyPropertyService {
         isAcceptedAssumer: 0,
       })
       .where('propertyId =:propertyID', { propertyID })
-<<<<<<< Updated upstream
       .andWhere('assumerId !=:assumerId', { assumerId: assumerID })
       .execute();
 
@@ -1017,9 +1003,5 @@ export class MyPropertyService {
       message: 'Assumption was accepted',
       data: 'Assumption was accepted',
     };
-=======
-      .andWhere('isActive = 1')
-      .execute();
->>>>>>> Stashed changes
   }
 }
