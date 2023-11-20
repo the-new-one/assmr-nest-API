@@ -82,12 +82,14 @@ export class SigninService {
             userId: result.id,
           },
           select: {
+            userId: true,
             userType: true,
             isSubscribed: true,
             subscription_date: true,
             subscription_expiry: true,
           },
         });
+        // console.log(subscriptionInfo);
 
         if (subscriptionInfo.userType === 'company') {
           const d1 = new Date(subscriptionInfo.subscription_expiry);
@@ -95,8 +97,7 @@ export class SigninService {
           if (d2 > d1) {
             subscriptionInfo.isSubscribed = false;
           }
-        }
-        else if (subscriptionInfo.userType === 'individual-user') {
+        } else if (subscriptionInfo.userType === 'individual-user') {
           const d1 = new Date(subscriptionInfo.subscription_expiry);
           const d2 = new Date();
           if (d2 > d1 && subscriptionInfo.isSubscribed) {

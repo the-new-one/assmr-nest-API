@@ -106,7 +106,7 @@ export class PropertyAsssumptionsService {
       .select(['user', 'vehicle', 'vehicleImages', 'property'])
       .getRawMany();
     // .getSql();
-    // console.log(entity);
+    console.log(entity);
     return {
       code: 200,
       status: 1,
@@ -200,18 +200,28 @@ export class PropertyAsssumptionsService {
       .innerJoin('vehicle.vehicleImages', 'vehicleImages')
       .where('vehicle.propertyId = :propertyId', { propertyId })
       .select([
-        'userId',
-        'brand',
-        'model',
-        'owner',
-        'downpayment',
-        'location',
-        'installmentpaid',
-        'delinquent',
-        'description',
+        'vehicle.userId',
+        'vehicle.color',
+        'vehicle.brand',
+        'vehicle.model',
+        'vehicle.milage',
+        'vehicle.condition',
+        'vehicle.issue',
+        'vehicle.owner',
+        'vehicle.downpayment',
+        'vehicle.location',
+        'vehicle.installmentpaid',
+        'vehicle.installmentduration',
+        'vehicle.remainingMonthsToPaid',
+        'vehicle.assumePrice',
+        'vehicle.monthlyPayment',
+        'vehicle.modeOfPayment',
+        'vehicle.delinquent',
+        'vehicle.description',
         'vehicleImages',
       ])
       .getRawMany();
+      
     // console.log(vehicle);
     return {
       code: 200,
@@ -335,7 +345,7 @@ export class PropertyAsssumptionsService {
       .innerJoinAndSelect(User, 'user', 'user.id = jewelry.userId')
       .where(`${concatFilter}`)
       .getRawMany();
-
+    console.log(jewelries);
     return {
       code: 200,
       status: 1,

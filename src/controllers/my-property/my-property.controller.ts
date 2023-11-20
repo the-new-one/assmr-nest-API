@@ -222,4 +222,10 @@ export class MyPropertyController {
   ): Promise<ResponseData<any>> {
     return this.propertyService.getAssumerDetail(param);
   }
+  @Post('/accept-certain-assumer')
+  acceptCertainAssumer(
+    @Body() param: { assumerID: number; propertyID: number },
+  ) {
+    return this.propertyService.acceptCertainAssumer(param);
+  }
 }

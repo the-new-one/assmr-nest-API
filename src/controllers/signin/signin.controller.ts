@@ -5,10 +5,9 @@ import {
   Param,
   Post,
   UploadedFile,
-  UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import {
   ActiveUserCredentialsModel,
@@ -47,7 +46,8 @@ export class SigninController {
     @UploadedFile() image: Express.Multer.File,
   ): Promise<ResponseData<string>> {
     try {
-      const pathList: string = image.path;
+      let pathList: string = '';
+      if (image) pathList = image.path;
       return this.signinService.updateCredentials(params, pathList);
     } catch (err) {
       console.log('singin.controller.ts');

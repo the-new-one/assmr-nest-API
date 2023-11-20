@@ -34,6 +34,14 @@ export class Jewelry {
   jewelry_material: string;
   @Column()
   jewelry_image: string;
+  @Column()
+  modeOfPayment: string;
+  @Column()
+  remainingMonthsToPaid: string;
+  @Column()
+  assumePrice: string;
+  @Column()
+  monthlyPayment: string;
   @Column({
     length: 5,
   })

@@ -14,6 +14,8 @@ export class FeedbacksService {
     private userFeedBackEntity: Repository<UserFeedBack>,
     @InjectRepository(Rating) private ratingEntity: Repository<Rating>,
     @InjectRepository(Company) private companyEntity: Repository<Company>,
+    @InjectRepository(UserSubscription)
+    private userSubEntity: Repository<UserSubscription>,
   ) {}
   async postUserFeedBack(
     param: UserFeedBacksModel,
@@ -172,6 +174,28 @@ export class FeedbacksService {
       status: 1,
       message: 'Company ratings.',
       data: companyRating,
+    };
+  }
+  async updateUserSubscription(param: {
+    newExpirationDate: Date;
+    userId: number;
+  }): Promise<ResponseData<string>> {
+    const { newExpirationDate, userId } = param;
+    this.userSubEntity
+      .createQueryBuilder('user_subscription')
+      .update(UserSubscription)
+      .set({
+        subscription_expiry: newExpirationDate,
+        isSubscribed: true,
+      })
+      .where('user_subscription.userId =:userId', { userId })
+      .execute();
+
+    return {
+      code: 200,
+      status: 1,
+      message: 'Subscription updated.',
+      data: 'Your subscription has been upgraded.',
     };
   }
 }

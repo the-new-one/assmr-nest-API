@@ -33,6 +33,14 @@ export class Realeststate {
   delinquent: string;
   @Column()
   description: string;
+  @Column()
+  modeOfPayment: string;
+  @Column()
+  remainingMonthsToPaid: string;
+  @Column()
+  assumePrice: string;
+  @Column()
+  monthlyPayment: string;
   @Column({
     length: 5,
   })
