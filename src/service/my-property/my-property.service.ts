@@ -134,7 +134,6 @@ export class MyPropertyService {
         vehicleFrontIMG: JSON.stringify(pathLists),
       })
       .execute();
-
     this.userSubscription.decrement(
       {
         userId: activeUser.id,
@@ -972,7 +971,10 @@ export class MyPropertyService {
       data: assumerDetail,
     };
   }
-  async acceptCertainAssumer(param: { assumerID: number; propertyID: number }) {
+  async acceptCertainAssumer(param: {
+    assumerID: number;
+    propertyID: number;
+  }): Promise<ResponseData<string>> {
     const { assumerID, propertyID } = param;
     this.assumptionEntity
       .createQueryBuilder('assumption')
@@ -980,8 +982,8 @@ export class MyPropertyService {
       .set({
         isAcceptedAssumer: 1,
       })
-      .where('assumerId =: assumerID', { assumerID })
-      .andWhere('propertyId =:propertyId', { propertyID })
+      .where('assumerId =:assumerId', { assumerId: assumerID })
+      .andWhere('propertyId =:propertyId', { propertyId: propertyID })
       .execute();
 
     this.assumptionEntity
@@ -992,7 +994,14 @@ export class MyPropertyService {
         isAcceptedAssumer: 0,
       })
       .where('propertyId =:propertyID', { propertyID })
-      .andWhere('isActive = 1')
+      .andWhere('assumerId !=:assumerId', { assumerId: assumerID })
       .execute();
+
+    return {
+      code: 200,
+      status: 1,
+      message: 'Assumption was accepted',
+      data: 'Assumption was accepted',
+    };
   }
 }
