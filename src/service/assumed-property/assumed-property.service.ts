@@ -34,8 +34,8 @@ export class AssumedPropertyService {
       .andWhere('assumer.userId =:userId', { userId })
       .andWhere('assumption.userId =:userId', { userId })
       .andWhere('assumption.propertyId = vehicle.propertyId')
-
       .andWhere('assumption.isActive =:isActive', { isActive: '1' })
+      .groupBy('assumer.userId')
       // .getQuery();
       .execute();
     // console.log(assumed_records);
@@ -75,6 +75,7 @@ export class AssumedPropertyService {
       .andWhere('property.userId = user.id')
       .andWhere('assumption.isActive =:isActive', { isActive: '1' })
       .select(['assumer', 'assumption', 'user', 'jewelry', 'property'])
+      .groupBy('assumer.userId')
       .execute();
     // console.log(jewelryRecords);
 
@@ -83,7 +84,7 @@ export class AssumedPropertyService {
       ...realestateRecords,
       ...jewelryRecords,
     ];
-    // console.log(combinedRecords);
+    console.log(combinedRecords);
     return {
       code: 200,
       status: 1,

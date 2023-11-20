@@ -4,7 +4,7 @@ import { AssumedPropertyService } from 'src/service/assumed-property/assumed-pro
 @Controller('assumed-property')
 export class AssumedPropertyController {
   constructor(private assPropService: AssumedPropertyService) {}
-  @Get('vehicle-assumed-property/:userId')
+  @Get('all-my-assumed-property/:userId')
   getAllAssumedProperty(@Param() param: any) {
     return this.assPropService.getAllAssumedProperty(param);
   }
