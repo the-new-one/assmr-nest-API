@@ -12,4 +12,16 @@ export class AdminController {
   getGraphs() {
     return this.adminService.getAdminGraphs();
   }
+  @Get('/subscriptions')
+  getUserSubscriptions() {
+    return this.adminService.getUserSubscriptions();
+  }
+  @Get('/feedbacks')
+  getUserFeedBacks() {
+    
+  }
+  @Get('/dropped-property')
+  getAllDroppedProperty() {
+    return this.adminService.getAllDroppedProperty();
+  }
 }

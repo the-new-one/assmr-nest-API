@@ -392,7 +392,7 @@ export class MyPropertyService {
   async uploadJewelryProperty(
     uploaderInfo: JewelryOwnerModel,
     pathLists: string[],
-  ) {
+  ): Promise<ResponseData<any>> {
     const {
       email,
       jewelryName,
@@ -418,6 +418,18 @@ export class MyPropertyService {
       .select(['id'])
       .where('email =:userEmail', { userEmail: email })
       .execute();
+
+    if (
+      !(await checkSubscriptionEveryItemPost(this.userSubscription, user.id))
+    ) {
+      return {
+        code: 401,
+        status: 1,
+        message: 'Please subscribe to post a new property.',
+        data: [],
+      };
+    }
+
     const property = await this.propertyEntity
       .createQueryBuilder('property')
       .insert()
@@ -455,6 +467,13 @@ export class MyPropertyService {
       })
       .execute();
 
+    this.userSubscription.decrement(
+      {
+        userId: user.id,
+      },
+      'maxNoToPost',
+      1,
+    ); // update the maxNoToPost every time the user post a new property
     const response: ResponseData<[]> = {
       code: 1,
       status: 200,
