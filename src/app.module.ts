@@ -57,6 +57,7 @@ import { Company } from './entity/company/Company';
 // import { SignupController } from './controllers/signup/signup.controller';
 // import { SigninController } from './controllers/signin/signin.controller';
 import { UserSubscription } from './entity/subscription/Subscription';
+import { WebApiModule } from './controllers/web-api/web-api.module';
 @Module({
   imports: [
     AddressModule,
@@ -106,6 +107,7 @@ import { UserSubscription } from './entity/subscription/Subscription';
       ], // list your entity here
       synchronize: true,
     }),
+    WebApiModule,
   ],
   // controllers: [
   // AppController,
