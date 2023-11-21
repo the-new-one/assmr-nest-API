@@ -119,7 +119,7 @@ export class MyPropertyController {
   uploadJewelry(
     @Body() formBody: JewelryOwnerModel,
     @UploadedFiles() images: Array<Express.Multer.File>,
-  ): Promise<ResponseData<[]>> {
+  ): Promise<ResponseData<any>> {
     try {
       const pathLists: string[] = [];
       images.map((image) => pathLists.push(image.path));

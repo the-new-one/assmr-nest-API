@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UserFeedBack } from 'src/entity/feedbacks/FeedBacks';
 import { Jewelry } from 'src/entity/my-property/my-jewelry';
 import { Vehicle, VehicleImage } from 'src/entity/my-property/my-property';
 import {
@@ -14,6 +15,7 @@ import {
   Assumption,
 } from 'src/entity/property-assumption/PropertyAssumption';
 import { User } from 'src/entity/signup/signup.entity';
+import { UserSubscription } from 'src/entity/subscription/Subscription';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -32,6 +34,10 @@ export class AdminService {
     @InjectRepository(House) private houseEntity: Repository<House>,
     @InjectRepository(Lot) private lotEntity: Repository<Lot>,
     @InjectRepository(Property) private propertyEntity: Repository<Property>,
+    @InjectRepository(UserSubscription)
+    private userSub: Repository<UserSubscription>,
+    @InjectRepository(UserFeedBack)
+    private userFeedbackEntity: Repository<UserFeedBack>,
   ) {}
   async getHistory(param: {
     historyValue: string;
@@ -191,7 +197,36 @@ export class AdminService {
       data: concatResult,
     };
   }
-  async getAdminGraphs() {
+  async getAdminGraphs() {}
+  async getUserSubscriptions(): Promise<ResponseData<any>> {
+    const subscriptionList = await this.userSub
+      .createQueryBuilder('userSub')
+      .innerJoin(User, 'user', 'user.id = userSub.userId')
+      .select(['user', 'userSub'])
+      .execute();
 
+    return {
+      code: 200,
+      status: 1,
+      message: 'User subscriptions',
+      data: subscriptionList,
+    };
+  }
+  async getUserFeedBacks(): Promise<ResponseData<any>> {
+    return {
+      code: 200,
+      status: 1,
+      message: 'User feedbacks',
+      data: '',
+    };
+  }
+  async getAllDroppedProperty() {
+    const sql = `
+      SELECT p.id, p.property_type as property_type, v.brand as info1,v.model as info2, v.owner as owner, v.color as info3, v.milage as info4, v.issue, v.condition as info5,v.downpayment as downpayment,v.installmentpaid as installmentpaid, v.installmentduration as installmentduration,v.delinquent as delinquent,v.remainingMonthsToPaid as remainingMonthsToPaid, v.assumePrice, v.monthlyPayment,v.modeOfPayment, vi.vehicleFrontIMG as img, '' as info6 FROM property p INNER JOIN vehicle v ON p.id = v.propertyId INNER JOIN vehicle_image vi ON vi.vehicleId = v.id WHERE v.isDropped = 1
+      UNION ALL SELECT p.id, p.property_type as property_type, j.jewelry_owner as owner, j.jewelry_name as name, j.jewelry_model as model, j.jewelry_downpayment as downpayment, j.jewelry_delinquent as delinquent, j.jewelry_installmentpaid as installmentpaid, j.jewelry_installmentduration as installmentduration,j.jewelry_description,j.jewelry_karat, j.jewelry_grams as info3, j.jewelry_material as info4, '' as info5, j.jewelry_image as img, j.remainingMonthsToPaid as remainingMonthsToPaid,j.assumePrice, j.modeOfPayment, j.monthlyPayment FROM property p INNER JOIN jewelry j ON j.propertyId = p.id WHERE j.isDropped = 1
+      UNION ALL SELECT p.id, p.property_type as property_type, r.owner as owner, r.realestateType as info1, '' as info2, '' as info3, '' as info4, r.downpayment as downpayment, r.installmentpaid as installmentpaid, r.installmentduration as installmentduration, r.delinquent as delinquent, r.modeOfPayment, r.remainingMonthsToPaid as remainingMonthsToPaid, r.assumePrice as assumePrice, r.monthlyPayment, '' as info5, '' as info6, '' as info7, '' as info8  FROM property p INNER JOIN realeststate r ON r.propertyId = p.id INNER JOIN house_and_lot hal ON hal.realestateId = r.id INNER JOIN house h ON h.realestateId = r.id INNER JOIN lot l ON l.realestateId = r.id WHERE r.isDropped = 1
+    `;
+    const droppedList = await this.propertyEntity.query(sql);
+    console.log(droppedList);
   }
 }
