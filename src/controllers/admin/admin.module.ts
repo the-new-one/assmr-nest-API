@@ -17,7 +17,7 @@ import {
   Assumption,
 } from 'src/entity/property-assumption/PropertyAssumption';
 import { UserSubscription } from 'src/entity/subscription/Subscription';
-import { UserFeedBack } from 'src/entity/feedbacks/FeedBacks';
+import { Rating, UserFeedBack } from 'src/entity/feedbacks/FeedBacks';
 
 @Module({
   controllers: [AdminController],
@@ -35,6 +35,7 @@ import { UserFeedBack } from 'src/entity/feedbacks/FeedBacks';
       Assumption,
       UserSubscription,
       UserFeedBack,
+      Rating,
     ]),
   ],
   providers: [AdminService],

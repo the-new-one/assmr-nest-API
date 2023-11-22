@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserFeedBack } from 'src/entity/feedbacks/FeedBacks';
+import { Rating, UserFeedBack } from 'src/entity/feedbacks/FeedBacks';
 import { Jewelry } from 'src/entity/my-property/my-jewelry';
 import { Vehicle, VehicleImage } from 'src/entity/my-property/my-property';
 import {
@@ -38,6 +38,7 @@ export class AdminService {
     private userSub: Repository<UserSubscription>,
     @InjectRepository(UserFeedBack)
     private userFeedbackEntity: Repository<UserFeedBack>,
+    @InjectRepository(Rating) private ratingEntity: Repository<Rating>,
   ) {}
   async getHistory(param: {
     historyValue: string;
@@ -228,5 +229,50 @@ export class AdminService {
     `;
     const droppedList = await this.propertyEntity.query(sql);
     console.log(droppedList);
+  }
+  async getAllRatings(param: {
+    activeView: string;
+  }): Promise<ResponseData<any>> {
+    const { activeView } = param;
+    let sql = 'SELECT ';
+    let record = null;
+
+    switch (activeView) {
+      case 'Show company ratings':
+        sql =
+          "SELECT c.*, t.totalCommenter\
+          FROM company c\
+          LEFT JOIN (\
+              SELECT r.ratedTo, COUNT(*) AS totalCommenter\
+              FROM rating r\
+              INNER JOIN user u ON u.id = r.userId\
+              WHERE r.sendRatingTo = 'rate-a-company'\
+              GROUP BY r.ratedTo\
+          ) AS t ON c.id = t.ratedTo\
+          WHERE c.id IN (\
+              SELECT ratedTo\
+              FROM rating\
+              WHERE sendRatingTo = 'rate-a-company'\
+          )\
+          GROUP BY c.id, t.totalCommenter;";
+        const companyRatings = await this.realestateEntity.query(sql);
+        record = companyRatings;
+        break;
+      case 'Show app ratings':
+        sql =
+          "SELECT u.*, r.* FROM rating r INNER JOIN user u ON u.id = r.userId WHERE r.sendRatingTo = 'rate-assmr-app'";
+        const appRatings = await this.realestateEntity.query(sql);
+        record = appRatings;
+        break;
+      default:
+        console.log('No activeView');
+    }
+    console.log(record);
+    return {
+      code: 200,
+      status: 1,
+      message: 'Get ratings',
+      data: record,
+    };
   }
 }
