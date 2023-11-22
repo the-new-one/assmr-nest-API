@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { AdminService } from 'src/service/admin/admin.service';
 
 @Controller('admin')
@@ -17,11 +17,13 @@ export class AdminController {
     return this.adminService.getUserSubscriptions();
   }
   @Get('/feedbacks')
-  getUserFeedBacks() {
-    
-  }
+  getUserFeedBacks() {}
   @Get('/dropped-property')
   getAllDroppedProperty() {
     return this.adminService.getAllDroppedProperty();
+  }
+  @Get('/get-all-ratings/:activeView')
+  getAllRatings(@Param() param: { activeView: string }) {
+    return this.adminService.getAllRatings(param);
   }
 }
