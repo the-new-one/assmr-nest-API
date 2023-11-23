@@ -57,7 +57,13 @@ import { Company } from './entity/company/Company';
 // import { SignupController } from './controllers/signup/signup.controller';
 // import { SigninController } from './controllers/signin/signin.controller';
 import { UserSubscription } from './entity/subscription/Subscription';
+<<<<<<< Updated upstream
 import { WebApiModule } from './controllers/web-api/web-api.module';
+=======
+import { WebApiModule } from './controller/web-api/web-api.module';
+import { WebApiModule } from './controllers/web-api/web-api.module';
+import { WebApiService } from './service/web-api/web-api.service';
+>>>>>>> Stashed changes
 @Module({
   imports: [
     AddressModule,
@@ -109,6 +115,7 @@ import { WebApiModule } from './controllers/web-api/web-api.module';
     }),
     WebApiModule,
   ],
+  providers: [WebApiService],
   // controllers: [
   // AppController,
   // PropertyAssumptionsController,
