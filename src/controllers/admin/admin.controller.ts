@@ -17,7 +17,9 @@ export class AdminController {
     return this.adminService.getUserSubscriptions();
   }
   @Get('/feedbacks')
-  getUserFeedBacks() {}
+  getUserFeedBacks() {
+    return this.adminService.getUserFeedBacks();
+  }
   @Get('/dropped-property')
   getAllDroppedProperty() {
     return this.adminService.getAllDroppedProperty();

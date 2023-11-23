@@ -214,27 +214,36 @@ export class AdminService {
     };
   }
   async getUserFeedBacks(): Promise<ResponseData<any>> {
+    const feedBack = await this.userFeedbackEntity.createQueryBuilder('feeds')
+      .execute();
+    console.log(feedBack);
     return {
       code: 200,
       status: 1,
       message: 'User feedbacks',
-      data: '',
+      data: feedBack,
     };
   }
-  async getAllDroppedProperty() {
+  async getAllDroppedProperty(): Promise<ResponseData<any>> {
     const sql = `
       SELECT p.id, p.property_type as property_type, v.brand as info1,v.model as info2, v.owner as owner, v.color as info3, v.milage as info4, v.issue, v.condition as info5,v.downpayment as downpayment,v.installmentpaid as installmentpaid, v.installmentduration as installmentduration,v.delinquent as delinquent,v.remainingMonthsToPaid as remainingMonthsToPaid, v.assumePrice, v.monthlyPayment,v.modeOfPayment, vi.vehicleFrontIMG as img, '' as info6 FROM property p INNER JOIN vehicle v ON p.id = v.propertyId INNER JOIN vehicle_image vi ON vi.vehicleId = v.id WHERE v.isDropped = 1
       UNION ALL SELECT p.id, p.property_type as property_type, j.jewelry_owner as owner, j.jewelry_name as name, j.jewelry_model as model, j.jewelry_downpayment as downpayment, j.jewelry_delinquent as delinquent, j.jewelry_installmentpaid as installmentpaid, j.jewelry_installmentduration as installmentduration,j.jewelry_description,j.jewelry_karat, j.jewelry_grams as info3, j.jewelry_material as info4, '' as info5, j.jewelry_image as img, j.remainingMonthsToPaid as remainingMonthsToPaid,j.assumePrice, j.modeOfPayment, j.monthlyPayment FROM property p INNER JOIN jewelry j ON j.propertyId = p.id WHERE j.isDropped = 1
       UNION ALL SELECT p.id, p.property_type as property_type, r.owner as owner, r.realestateType as info1, '' as info2, '' as info3, '' as info4, r.downpayment as downpayment, r.installmentpaid as installmentpaid, r.installmentduration as installmentduration, r.delinquent as delinquent, r.modeOfPayment, r.remainingMonthsToPaid as remainingMonthsToPaid, r.assumePrice as assumePrice, r.monthlyPayment, '' as info5, '' as info6, '' as info7, '' as info8  FROM property p INNER JOIN realeststate r ON r.propertyId = p.id INNER JOIN house_and_lot hal ON hal.realestateId = r.id INNER JOIN house h ON h.realestateId = r.id INNER JOIN lot l ON l.realestateId = r.id WHERE r.isDropped = 1
     `;
     const droppedList = await this.propertyEntity.query(sql);
-    console.log(droppedList);
+    
+    return {
+      code: 200,
+      status: 1,
+      message: 'Dropped property',
+      data: droppedList,
+    }
   }
   async getAllRatings(param: {
     activeView: string;
   }): Promise<ResponseData<any>> {
     const { activeView } = param;
-    let sql = 'SELECT ';
+    let sql = '';
     let record = null;
 
     switch (activeView) {
@@ -267,7 +276,7 @@ export class AdminService {
       default:
         console.log('No activeView');
     }
-    console.log(record);
+    // console.log(record);
     return {
       code: 200,
       status: 1,
