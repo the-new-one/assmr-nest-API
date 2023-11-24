@@ -8,7 +8,7 @@ export class AdminController {
   getHistory(@Body() historyValue: { historyValue: string }) {
     return this.adminService.getHistory(historyValue);
   }
-  @Get('admin')
+  @Get('/graphs')
   getGraphs() {
     return this.adminService.getAdminGraphs();
   }
