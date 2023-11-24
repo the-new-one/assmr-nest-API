@@ -111,6 +111,7 @@ export class MyPropertyService {
       .values({
         userId: () => activeUser.id.toString(),
         property_type: 'vehicle',
+        posted_date: new Date(),
       })
       .execute();
 
@@ -437,6 +438,7 @@ export class MyPropertyService {
       .values({
         userId: user[0].id,
         property_type: 'jewelry',
+        posted_date: new Date(),
       })
       .execute();
 
@@ -719,6 +721,7 @@ export class MyPropertyService {
         .values({
           userId: () => id.toString(),
           property_type: 'realestate',
+          posted_date: new Date(),
         })
         .execute();
       const realestate = await this.realestateEntity
