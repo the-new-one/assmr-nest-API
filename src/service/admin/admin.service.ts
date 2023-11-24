@@ -198,69 +198,7 @@ export class AdminService {
       data: concatResult,
     };
   }
-  async getAdminGraphs(): Promise<ResponseData<any>> {
-    // CONST POSTED PROPERTY
-    const postedPropertyVehicle = await this.vehicleEntity
-      .createQueryBuilder('vehicle')
-      .where('isDropped = 0')
-      .getCount();
-    const postedPropertyRealestate = await this.realestateEntity
-      .createQueryBuilder('realestate')
-      .where('isDropped = 0')
-      .getCount();
-    const postedPropertyJewelry = await this.jewelryEntity
-      .createQueryBuilder('jewelry')
-      .where('isDropped = 0')
-      .getCount();
-
-    const allPostedProperty = {
-      postedPropertyVehicle,
-      postedPropertyRealestate,
-      postedPropertyJewelry,
-    };
-    // ASSUMED PROPERTY
-    const assumedPropertyVehicle = await this.vehicleEntity
-      .createQueryBuilder('vehicle')
-      .innerJoin(Assumption, 'assmptn')
-      .where('assmptn.propertyId = vehicle.propertyId')
-      .getCount();
-
-    const assumedPropertyRealestate = await this.realestateEntity
-      .createQueryBuilder('realestate')
-      .innerJoin(Assumption, 'assmptn')
-      .where('assmptn.propertyId = realestate.propertyId')
-      .getCount();
-
-    const assumedPropertyJewelry = await this.realestateEntity
-      .createQueryBuilder('jewelry')
-      .innerJoin(Assumption, 'assmptn')
-      .where('assmptn.propertyId = jewelry.propertyId')
-      .getCount();
-    const allAssumedProperty = {
-      assumedPropertyVehicle,
-      assumedPropertyRealestate,
-      assumedPropertyJewelry,
-    };
-
-    const sql = `
-      SELECT p.id, p.property_type as property_type, v.brand as info1,v.model as info2, v.owner as owner, v.color as info3, v.milage as info4, v.issue, v.condition as info5,v.downpayment as downpayment,v.installmentpaid as installmentpaid, v.installmentduration as installmentduration,v.delinquent as delinquent,v.remainingMonthsToPaid as remainingMonthsToPaid, v.assumePrice, v.monthlyPayment,v.modeOfPayment, vi.vehicleFrontIMG as img, '' as info6 FROM property p INNER JOIN vehicle v ON p.id = v.propertyId INNER JOIN vehicle_image vi ON vi.vehicleId = v.id WHERE v.isDropped = 0
-      UNION ALL SELECT p.id, p.property_type as property_type, j.jewelry_owner as owner, j.jewelry_name as name, j.jewelry_model as model, j.jewelry_downpayment as downpayment, j.jewelry_delinquent as delinquent, j.jewelry_installmentpaid as installmentpaid, j.jewelry_installmentduration as installmentduration,j.jewelry_description,j.jewelry_karat, j.jewelry_grams as info3, j.jewelry_material as info4, '' as info5, j.jewelry_image as img, j.remainingMonthsToPaid as remainingMonthsToPaid,j.assumePrice, j.modeOfPayment, j.monthlyPayment FROM property p INNER JOIN jewelry j ON j.propertyId = p.id WHERE j.isDropped = 0
-      UNION ALL SELECT p.id, p.property_type as property_type, r.owner as owner, r.realestateType as info1, '' as info2, '' as info3, '' as info4, r.downpayment as downpayment, r.installmentpaid as installmentpaid, r.installmentduration as installmentduration, r.delinquent as delinquent, r.modeOfPayment, r.remainingMonthsToPaid as remainingMonthsToPaid, r.assumePrice as assumePrice, r.monthlyPayment, '' as info5, '' as info6, '' as info7, '' as info8  FROM property p INNER JOIN realeststate r ON r.propertyId = p.id INNER JOIN house_and_lot hal ON hal.realestateId = r.id INNER JOIN house h ON h.realestateId = r.id INNER JOIN lot l ON l.realestateId = r.id WHERE r.isDropped = 0
-    `;
-    const activeProperties = await this.propertyEntity.query(sql);
-
-    // console.log(allAssumedProperty);
-    return {
-      code: 200,
-      status: 1,
-      message: 'Admin Dashboard',
-      data: {
-        allPostedProperty,
-        allAssumedProperty,
-        activeProperties,
-      },
-    };
-  }
+  async getAdminGraphs() {}
   async getUserSubscriptions(): Promise<ResponseData<any>> {
     const subscriptionList = await this.userSub
       .createQueryBuilder('userSub')
@@ -276,8 +214,7 @@ export class AdminService {
     };
   }
   async getUserFeedBacks(): Promise<ResponseData<any>> {
-    const feedBack = await this.userFeedbackEntity
-      .createQueryBuilder('feeds')
+    const feedBack = await this.userFeedbackEntity.createQueryBuilder('feeds')
       .execute();
     console.log(feedBack);
     return {
@@ -294,13 +231,13 @@ export class AdminService {
       UNION ALL SELECT p.id, p.property_type as property_type, r.owner as owner, r.realestateType as info1, '' as info2, '' as info3, '' as info4, r.downpayment as downpayment, r.installmentpaid as installmentpaid, r.installmentduration as installmentduration, r.delinquent as delinquent, r.modeOfPayment, r.remainingMonthsToPaid as remainingMonthsToPaid, r.assumePrice as assumePrice, r.monthlyPayment, '' as info5, '' as info6, '' as info7, '' as info8  FROM property p INNER JOIN realeststate r ON r.propertyId = p.id INNER JOIN house_and_lot hal ON hal.realestateId = r.id INNER JOIN house h ON h.realestateId = r.id INNER JOIN lot l ON l.realestateId = r.id WHERE r.isDropped = 1
     `;
     const droppedList = await this.propertyEntity.query(sql);
-
+    
     return {
       code: 200,
       status: 1,
       message: 'Dropped property',
       data: droppedList,
-    };
+    }
   }
   async getAllRatings(param: {
     activeView: string;
