@@ -284,4 +284,28 @@ export class AdminService {
       data: record,
     };
   }
+  async getAdminUnique(filteredParams: {dateFrom: string, dateTo: string}): Promise<ResponseData<any>> {
+    const {dateFrom, dateTo} = filteredParams;
+    let result;
+    if (dateFrom && dateTo) {
+      result = await this.propertyEntity.createQueryBuilder('property')
+        .where(`DATE_FORMAT(posted_date, '%Y-%m-%d') BETWEEN '${dateFrom}' AND '${dateTo}'`)
+        .select(['property.id', 'property.userId', 'property.posted_date', `(SELECT COUNT(*) FROM property WHERE DATE_FORMAT(posted_date, '%Y-%m-%d') BETWEEN '${dateFrom}' AND '${dateTo}' AND property_type = 'vehicle') as vehicle`, `(SELECT COUNT(*) FROM property WHERE DATE_FORMAT(posted_date, '%Y-%m-%d') BETWEEN '${dateFrom}' AND '${dateTo}' AND property_type = 'jewelry') as jewelry`, `(SELECT COUNT(*) FROM property WHERE DATE_FORMAT(posted_date, '%Y-%m-%d') BETWEEN '${dateFrom}' AND '${dateTo}' AND property_type = 'realestate') as realestate`])
+        .groupBy('DATE_FORMAT(posted_date, "%Y-%m-%d")')
+        .execute();
+    } else if (dateFrom) {
+      result = await this.propertyEntity.createQueryBuilder('property')
+        .where("DATE_FORMAT(posted_date, '%Y-%m-%d') =:posted_date", { posted_date: dateFrom })
+        .select(['property.id', 'property.userId', 'property.posted_date', `(SELECT COUNT(*) FROM property WHERE DATE_FORMAT(posted_date, '%Y-%m-%d') ='${dateFrom}' AND property_type = 'vehicle') as vehicle`, `(SELECT COUNT(*) FROM property WHERE DATE_FORMAT(posted_date, '%Y-%m-%d') ='${dateFrom}' AND property_type = 'jewelry') as jewelry`, `(SELECT COUNT(*) FROM property WHERE DATE_FORMAT(posted_date, '%Y-%m-%d') ='${dateFrom}' AND property_type = 'realestate') as realestate`])
+        .groupBy('DATE_FORMAT(posted_date, "%Y-%m-%d")')
+        .execute();
+    }
+    console.log(result);
+    return {
+      code: 200,
+      status: 1,
+      message: 'Unique records.',
+      data: result
+    }
+  }
 }

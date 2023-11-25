@@ -28,4 +28,8 @@ export class AdminController {
   getAllRatings(@Param() param: { activeView: string }) {
     return this.adminService.getAllRatings(param);
   }
+  @Post('/unique')
+  getAdminUnique(@Body() filteredParams: {dateFrom: string, dateTo: string}) {
+    return this.adminService.getAdminUnique(filteredParams);
+  }
 }
