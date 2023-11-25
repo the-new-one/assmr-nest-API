@@ -10,4 +10,6 @@ export class Property {
     length: 20,
   })
   property_type: string;
+  @Column()
+  posted_date: Date;
 }
