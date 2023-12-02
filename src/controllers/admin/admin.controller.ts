@@ -29,7 +29,7 @@ export class AdminController {
     return this.adminService.getAllRatings(param);
   }
   @Post('/unique')
-  getAdminUnique(@Body() filteredParams: {dateFrom: string, dateTo: string}) {
+  getAdminUnique(@Body() filteredParams: { dateFrom: string; dateTo: string }) {
     return this.adminService.getAdminUnique(filteredParams);
   }
 }
