@@ -186,8 +186,8 @@ export class PropertyAsssumptionsService {
     return {
       code: 200,
       status: 1,
-      message: 'Property was assumed successfully.',
-      data: 'Successfully assumed.',
+      message: 'Property was inquired successfully.',
+      data: 'Successfully inquired.',
     };
   } // this assume a vehicle property
   async getCertainVehicle(param: {
@@ -201,6 +201,7 @@ export class PropertyAsssumptionsService {
       .where('vehicle.propertyId = :propertyId', { propertyId })
       .select([
         'vehicle.userId',
+        'vehicle.propertyId',
         'vehicle.color',
         'vehicle.brand',
         'vehicle.model',

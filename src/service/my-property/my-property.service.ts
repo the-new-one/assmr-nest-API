@@ -419,9 +419,9 @@ export class MyPropertyService {
       .select(['id'])
       .where('email =:userEmail', { userEmail: email })
       .execute();
-
+      
     if (
-      !(await checkSubscriptionEveryItemPost(this.userSubscription, user.id))
+      !(await checkSubscriptionEveryItemPost(this.userSubscription, user[0].id))
     ) {
       return {
         code: 401,
@@ -712,6 +712,17 @@ export class MyPropertyService {
         .select(['id'])
         .where('email =:email', { email })
         .getRawOne();
+        
+      if (
+        !(await checkSubscriptionEveryItemPost(this.userSubscription, user.id))
+      ) {
+        return {
+          code: 401,
+          status: 1,
+          message: 'Please subscribe to post a new property.',
+          data: 'Please subscribe to post a new property.',
+        };
+      }
 
       const { id } = user;
       const property = await this.propertyEntity
@@ -746,6 +757,15 @@ export class MyPropertyService {
           propertyId: property.raw.insertId,
         })
         .execute();
+
+      this.userSubscription.decrement(
+        {
+          userId: user.id,
+        },
+        'maxNoToPost',
+        1,
+      ); // update the maxNoToPost every time the user post a new property
+
       const { insertId } = realestate.raw;
 
       switch (realestateType) {
