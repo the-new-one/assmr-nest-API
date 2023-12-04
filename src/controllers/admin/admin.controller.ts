@@ -32,4 +32,8 @@ export class AdminController {
   getAdminUnique(@Body() filteredParams: { dateFrom: string; dateTo: string }) {
     return this.adminService.getAdminUnique(filteredParams);
   }
+  @Get('/successfully-assumed')
+  getAllSuccessfullyAssumed() {
+    return this.adminService.getAllSuccessFullyAssumedProperty();
+  }
 }

@@ -490,6 +490,12 @@ export class MyPropertyService {
   }): Promise<ResponseData<MyJewelryPropertyModel[]>> {
     const { email } = param;
 
+    const user = await this.userEntity
+      .createQueryBuilder('user')
+      .select(['id'])
+      .where('email =:email', { email })
+      .getRawOne();
+
     const subQ = await this.Jewelry.createQueryBuilder('jj')
       .innerJoin(Assumption, 'asmpt', 'asmpt.propertyId = jj.propertyId')
       .innerJoin(
@@ -498,17 +504,13 @@ export class MyPropertyService {
         'asmr.id = asmpt.assumerId AND asmpt.isActive = 1',
       )
       .select('COUNT(jj.id)')
+      .andWhere('asmpt.isActive = 1')
+      .andWhere('asmpt.propowner_id ='+user.id)
       .getSql();
-
-    const user = await this.userEntity
-      .createQueryBuilder('user')
-      .select(['id'])
-      .where('email =:email', { email })
-      .getRawOne();
 
     const jewelries = await this.Jewelry.createQueryBuilder('jewelry')
       .select(['jewelry', `(${subQ}) as totalAssumption`])
-      .where('userId =:userId', { userId: user.id })
+      .where('jewelry.userId ='+user.id)
       .andWhere('jewelry.isDropped =0')
       .execute();
     // .getQuery();

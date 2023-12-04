@@ -135,6 +135,7 @@ export class PropertyAsssumptionsService {
       .createQueryBuilder()
       .where('userId =:userID', { userID })
       .andWhere('propertyId =:propertyID', { propertyID })
+      .andWhere('isActive = 1')
       .getCount();
 
     if (checkIfAssumedAlready > 0) {
