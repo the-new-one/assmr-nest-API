@@ -32,7 +32,9 @@ export class Jewelry {
   jewelry_grams: string;
   @Column()
   jewelry_material: string;
-  @Column()
+  @Column({
+    length: 3000
+  })
   jewelry_image: string;
   @Column()
   modeOfPayment: string;

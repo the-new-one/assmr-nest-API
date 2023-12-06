@@ -69,7 +69,9 @@ export class VehicleImage {
   id: number;
   @Column()
   vehicleId: number;
-  @Column()
+  @Column({
+    length: 3000
+  })
   vehicleFrontIMG: string;
   @Column()
   vehicleRightIMG: string;

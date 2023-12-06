@@ -65,3 +65,7 @@ assume balik, pero ang nahitabo is nag error siya na dili na pwede maka assume. 
 
 24 D) kung plain user raka ang subscription kay;
     24.1 D) 999 per month
+
+Dec. 05, 2023
+1 D) ni assume siya then gi remove niya, then gi assume niya balik then wala na siya sa assumer list gg.
+2 D) list all users.

@@ -36,4 +36,8 @@ export class AdminController {
   getAllSuccessfullyAssumed() {
     return this.adminService.getAllSuccessFullyAssumedProperty();
   }
+  @Get('/user-list')
+  getAllUserList() {
+    return this.adminService.getAllUserList();
+  }
 }

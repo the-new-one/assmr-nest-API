@@ -62,7 +62,9 @@ export class HouseAndLot {
   realestateId: number;
   @Column()
   developer: string;
-  @Column()
+  @Column({
+    length: 3000
+  })
   hal_front_image: string;
   @Column()
   hal_rightside_image: string;
@@ -83,7 +85,9 @@ export class House {
   realestateId: number;
   @Column()
   developer: string;
-  @Column()
+  @Column({
+    length: 3000
+  })
   house_front_image: string;
   @Column()
   house_rightside_image: string;
@@ -103,7 +107,9 @@ export class Lot {
   id: number;
   @Column()
   realestateId: number;
-  @Column()
+  @Column({
+    length: 3000
+  })
   lot_image: string;
   @Column()
   lot_document_image: string;
