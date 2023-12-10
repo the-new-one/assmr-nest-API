@@ -121,6 +121,7 @@ export class MessagesService {
         notificationContent: 'someone sent a message',
         isSeen: 'false',
         notificationDate: new Date(),
+        uniqueId: `sender: ${senderId}, receiver: ${receiverId}`,
       })
       .execute();
 

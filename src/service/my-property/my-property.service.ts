@@ -9,6 +9,7 @@ import {
   Realeststate,
 } from 'src/entity/my-property/my-realestate';
 import { Property } from 'src/entity/my-property/property';
+import { Notifications } from 'src/entity/notifications/Notifications';
 import {
   Assumer,
   Assumption,
@@ -53,6 +54,8 @@ export class MyPropertyService {
     @InjectRepository(Jewelry) private jewelryEntity: Repository<Jewelry>,
     @InjectRepository(UserSubscription)
     private userSubscription: Repository<UserSubscription>,
+    @InjectRepository(Notifications)
+    private notificationEntity: Repository<Notifications>,
   ) {}
   async uploadVehicleProperty(
     uploaderInfo: VehicleOwnerModel,
@@ -88,6 +91,7 @@ export class MyPropertyService {
       modeOfPayment: uploaderInfo.modeOfPayment,
       isDropped: '0',
       propertyId: 0,
+      branchPurchase: uploaderInfo.branchPurchase,
     };
 
     if (
@@ -234,8 +238,9 @@ export class MyPropertyService {
       modeOfPayment,
       delinquent,
       description,
+      branchPurchase,
     }: UpdateVehicleInformationModel = vehicleInfo;
-
+    console.log(vehicleInfo)
     this.vehicleEntity
       .createQueryBuilder('vehicle')
       .update(Vehicle)
@@ -257,6 +262,7 @@ export class MyPropertyService {
         modeOfPayment,
         delinquent,
         description,
+        branchPurchase: branchPurchase,
       })
       .where('vehicle.id =:vehicleID', { vehicleID: id })
       .execute();
@@ -375,12 +381,34 @@ export class MyPropertyService {
       data: assumerList as unknown as AssumerListModel,
     };
   }
-  async removeAssumer(assumerId: number): Promise<ResponseData<string>> {
+  async removeAssumer(
+    assumerId: number,
+    assumerUserId: number,
+    activeUserId: number,
+    propertyId: number,
+  ): Promise<ResponseData<string>> {
+    // activeUserId here is the propertyOwnerId
+    // console.log(assumerId + ' => ' + assumerUserId + ' => ' + activeUserId + ' => '+propertyId);
     this.assumptionEntity
       .createQueryBuilder('assumption')
       .update(Assumption)
       .set({ isActive: '0' })
       .where('assumption.assumerId =:assumerId', { assumerId })
+      .execute();
+
+    this.notificationEntity
+      .createQueryBuilder('notif')
+      .insert()
+      .into(Notifications)
+      .values({
+        userNotifReceiverId: assumerUserId,
+        userNotifSenderId: activeUserId,
+        notificationType: 'remove-assumption',
+        notificationContent: 'Property owner remove your assumption',
+        isSeen: 'false',
+        notificationDate: new Date(),
+        uniqueId: propertyId.toString(),
+      })
       .execute();
 
     return {
@@ -412,6 +440,7 @@ export class MyPropertyService {
       remainingMonthsToPaid,
       assumePrice,
       monthlyPayment,
+      pawnshopName,
     } = uploaderInfo;
 
     const user = await this.userEntity
@@ -419,7 +448,7 @@ export class MyPropertyService {
       .select(['id'])
       .where('email =:userEmail', { userEmail: email })
       .execute();
-      
+
     if (
       !(await checkSubscriptionEveryItemPost(this.userSubscription, user[0].id))
     ) {
@@ -466,6 +495,7 @@ export class MyPropertyService {
         monthlyPayment,
         isDropped: '0',
         propertyId: property.raw.insertId,
+        pawnShopName: pawnshopName,
       })
       .execute();
 
@@ -505,12 +535,12 @@ export class MyPropertyService {
       )
       .select('COUNT(jj.id)')
       .andWhere('asmpt.isActive = 1')
-      .andWhere('asmpt.propowner_id ='+user.id)
+      .andWhere('asmpt.propowner_id =' + user.id)
       .getSql();
 
     const jewelries = await this.Jewelry.createQueryBuilder('jewelry')
       .select(['jewelry', `(${subQ}) as totalAssumption`])
-      .where('jewelry.userId ='+user.id)
+      .where('jewelry.userId =' + user.id)
       .andWhere('jewelry.isDropped =0')
       .execute();
     // .getQuery();
@@ -559,6 +589,7 @@ export class MyPropertyService {
       remainingMonthsToPaid,
       assumePrice,
       monthlyPayment,
+      pawnShopName,
     } = jewelryInfo;
     this.Jewelry.createQueryBuilder('jewelry')
       .update(Jewelry)
@@ -579,6 +610,7 @@ export class MyPropertyService {
         remainingMonthsToPaid,
         assumePrice,
         monthlyPayment,
+        pawnShopName: pawnShopName,
       })
       .where('id =:jewelryId', { jewelryId: id })
       .execute();
@@ -714,7 +746,7 @@ export class MyPropertyService {
         .select(['id'])
         .where('email =:email', { email })
         .getRawOne();
-        
+
       if (
         !(await checkSubscriptionEveryItemPost(this.userSubscription, user.id))
       ) {
@@ -960,7 +992,7 @@ export class MyPropertyService {
     otherInfo: string;
     propType: string;
   }): Promise<ResponseData<any>> {
-    console.log(param);
+    // console.log(param);
     const { assumerID, propType } = param;
     const assumerDetail = await this.assumerEntity
       .createQueryBuilder('assumer')
@@ -1007,7 +1039,7 @@ export class MyPropertyService {
     }
 
     assumerDetail.property = property;
-    console.log(assumerDetail);
+    // console.log(assumerDetail);
     return {
       code: 200,
       status: 1,
@@ -1018,8 +1050,11 @@ export class MyPropertyService {
   async acceptCertainAssumer(param: {
     assumerID: number;
     propertyID: number;
+    assumerUserId: number;
+    activeUserId: number;
   }): Promise<ResponseData<string>> {
-    const { assumerID, propertyID } = param;
+    const { assumerID, propertyID, activeUserId, assumerUserId } = param;
+    // console.log(param);
     this.assumptionEntity
       .createQueryBuilder('assumption')
       .update(Assumption)
@@ -1041,6 +1076,21 @@ export class MyPropertyService {
       .andWhere('assumerId !=:assumerId', { assumerId: assumerID })
       .execute();
 
+    this.notificationEntity
+      .createQueryBuilder('notification')
+      .insert()
+      .into(Notifications)
+      .values({
+        userNotifReceiverId: assumerUserId,
+        userNotifSenderId: activeUserId,
+        notificationType: 'accept-assumption',
+        notificationContent: 'Property owner accepted your assumption',
+        isSeen: 'false',
+        notificationDate: new Date(),
+        uniqueId: propertyID.toString(),
+      })
+      .execute();
+    // console.log('success assumption');
     return {
       code: 200,
       status: 1,

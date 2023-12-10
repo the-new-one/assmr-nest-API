@@ -4,11 +4,14 @@ import { SigninService } from 'src/service/signin/signin.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Account, User } from 'src/entity/signup/signup.entity';
 import { UserSubscription } from 'src/entity/subscription/Subscription';
+import { Company } from 'src/entity/company/Company';
 
 @Module({
   controllers: [SigninController],
   providers: [SigninService],
-  imports: [TypeOrmModule.forFeature([User, Account, UserSubscription])],
+  imports: [
+    TypeOrmModule.forFeature([User, Account, UserSubscription, Company]),
+  ],
   exports: [TypeOrmModule], // important
 })
 export class SigninModule {}

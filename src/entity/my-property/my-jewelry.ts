@@ -48,6 +48,10 @@ export class Jewelry {
     length: 5,
   })
   isDropped: string;
+  @Column({
+    length: 50,
+  })
+  pawnShopName: string;
 
   @ManyToOne((type) => User, (user) => user.jewelries)
   user: User;

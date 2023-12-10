@@ -9,9 +9,19 @@ export class AssumedPropertyController {
     return this.assPropService.getAllAssumedProperty(param);
   }
   @Post('vehicle-user-removed-assumption')
-  removedVehicleAssumption(@Body() param: { assumptionID: number }) {
-    const { assumptionID } = param;
-
-    return this.assPropService.removeRemovedAssumption(assumptionID);
+  removedVehicleAssumption(
+    @Body()
+    param: {
+      assumptionID: number;
+      propertyOwnerId: number;
+      propertyId: number;
+    },
+  ) {
+    const { assumptionID, propertyOwnerId, propertyId } = param;
+    return this.assPropService.removeRemovedAssumption(
+      assumptionID,
+      propertyOwnerId,
+      propertyId,
+    );
   }
 }

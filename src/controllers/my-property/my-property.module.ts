@@ -17,6 +17,7 @@ import {
 } from 'src/entity/my-property/my-realestate';
 import { Property } from 'src/entity/my-property/property';
 import { UserSubscription } from 'src/entity/subscription/Subscription';
+import { Notifications } from 'src/entity/notifications/Notifications';
 @Module({
   controllers: [MyPropertyController],
   providers: [MyPropertyService],
@@ -34,6 +35,7 @@ import { UserSubscription } from 'src/entity/subscription/Subscription';
       Lot,
       Property,
       UserSubscription,
+      Notifications,
     ]),
   ],
   exports: [TypeOrmModule],

@@ -106,7 +106,7 @@ export class PropertyAsssumptionsService {
       .select(['user', 'vehicle', 'vehicleImages', 'property'])
       .getRawMany();
     // .getSql();
-    console.log(entity);
+    // console.log(entity);
     return {
       code: 200,
       status: 1,
@@ -182,6 +182,7 @@ export class PropertyAsssumptionsService {
         notificationContent: 'Someone assumed your property',
         isSeen: 'false',
         notificationDate: new Date(),
+        uniqueId: propertyID,
       })
       .execute();
     return {
@@ -195,7 +196,7 @@ export class PropertyAsssumptionsService {
     propertyId: number;
   }): Promise<ResponseData<CertainVehicleModel[]>> {
     const { propertyId } = param;
-    // console.log(param);
+    console.log(param);
     const vehicle = await this.vehicleEntity
       .createQueryBuilder('vehicle')
       .innerJoin('vehicle.vehicleImages', 'vehicleImages')
@@ -203,6 +204,7 @@ export class PropertyAsssumptionsService {
       .select([
         'vehicle.userId',
         'vehicle.propertyId',
+        'vehicle.branchPurchase',
         'vehicle.color',
         'vehicle.brand',
         'vehicle.model',
@@ -291,7 +293,17 @@ export class PropertyAsssumptionsService {
     realestateType: string;
   }): Promise<ResponseData<MyRealestatePropertyModel>> {
     // console.log(param);
-    const { propertyId, realestateType } = param;
+    let { propertyId, realestateType } = param;
+    const realType = await this.realestateEntity.findOne({
+      select: {
+        realestateType: true,
+      },
+      where: {
+        propertyId: propertyId
+      }
+    });
+    realestateType = realType.realestateType;
+
     const tableName =
       realestateType === 'house and lot'
         ? HouseAndLot
@@ -347,7 +359,7 @@ export class PropertyAsssumptionsService {
       .innerJoinAndSelect(User, 'user', 'user.id = jewelry.userId')
       .where(`${concatFilter}`)
       .getRawMany();
-    console.log(jewelries);
+    // console.log(jewelries);
     return {
       code: 200,
       status: 1,

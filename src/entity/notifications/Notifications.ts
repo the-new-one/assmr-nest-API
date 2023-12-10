@@ -16,4 +16,6 @@ export class Notifications {
   isSeen: string;
   @Column()
   notificationDate: Date;
+  @Column()
+  uniqueId: string;
 }

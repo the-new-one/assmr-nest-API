@@ -6,7 +6,7 @@ import { Account, User } from 'src/entity/signup/signup.entity';
 import { UserSubscription } from 'src/entity/subscription/Subscription';
 // import { UserSignupModel } from 'src/models/user/UserModel';
 import { Repository } from 'typeorm';
-
+import * as bcrypt from 'bcrypt';
 @Injectable()
 export class SignupService {
   constructor(
@@ -47,6 +47,7 @@ export class SignupService {
             data: [],
           };
         }
+        const passwordHashIndividualUser = await bcrypt.hash(password, 10);
 
         const user = await this.userEntity
           .createQueryBuilder()
@@ -72,7 +73,7 @@ export class SignupService {
           .values({
             userId: user.raw.insertId,
             email,
-            password,
+            password: passwordHashIndividualUser,
           })
           .execute();
 
@@ -93,6 +94,7 @@ export class SignupService {
       case 'company':
         const {
           organizationName,
+          companyType,
           branch,
           representative,
           municipalityValue,
@@ -102,6 +104,9 @@ export class SignupService {
           website,
           datePickerDate,
         } = userForm;
+
+        const passwordHashCompanyUser = await bcrypt.hash(organizationName, 10);
+
         if (userExists) {
           return {
             code: 1,
@@ -136,7 +141,7 @@ export class SignupService {
           .values({
             userId: userCompany.raw.insertId,
             email,
-            password: organizationName,
+            password: passwordHashCompanyUser, // what organizationName is the password
           })
           .execute();
         const registrationDate = new Date();
@@ -151,6 +156,7 @@ export class SignupService {
           .values({
             userId: userCompany.raw.insertId,
             company_name: organizationName,
+            company_type: companyType,
             company_branch: branch,
             company_location: location,
             company_representative: representative,
