@@ -72,6 +72,7 @@ export class SigninService {
               subscription: null,
               image: '',
               companyType: '',
+              branch: '',
             },
           };
         }
@@ -97,6 +98,7 @@ export class SigninService {
         const companyResult = await this.companyEntity.findOne({
           select: {
             company_type: true,
+            branch: true,
           },
           where: {
             userId: result.id,
@@ -145,6 +147,7 @@ export class SigninService {
             subscription: subscriptionInfo ?? false,
             image: result.image,
             companyType: companyResult ? companyResult.company_type : '',
+            branch: companyResult ? companyResult.branch : '',
           },
         };
       }
@@ -167,6 +170,7 @@ export class SigninService {
             subscription: null,
             image: '',
             companyType: '',
+            branch: '',
           },
         });
       });
