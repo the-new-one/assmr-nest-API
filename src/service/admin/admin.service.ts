@@ -436,4 +436,22 @@ export class AdminService {
       data: userList,
     };
   }
+  async getAllUnsuccessfulTransactions(): Promise<ResponseData<any>> {
+    const query = `SELECT a.*, aa.*, ua.*, uo.*, p.*, v.color info1, v.brand info2, v.model info3,v.milage info4 FROM property p INNER JOIN user ua INNER JOIN assumption a ON ua.id = a.userId INNER JOIN assumer aa ON aa.id = a.assumerId INNER JOIN user uo ON p.userId = uo.id AND p.id = a.propertyId INNER JOIN vehicle v ON v.propertyId = p.id WHERE a.isActive = 0 AND a.isAcceptedAssumer = 0
+    
+    UNION ALL SELECT a.*, aa.*, ua.*, uo.*, p.*, r.realestateType info1, '' info2, '' info3, '' info4 FROM property p INNER JOIN user ua INNER JOIN assumption a ON ua.id = a.userId INNER JOIN assumer aa ON aa.id = a.assumerId INNER JOIN user uo ON p.userId = uo.id AND p.id = a.propertyId INNER JOIN realeststate r ON r.propertyId = p.id WHERE a.isActive = 0 AND a.isAcceptedAssumer = 0
+
+    UNION ALL SELECT a.*, aa.*, ua.*, uo.*, p.*, j.jewelry_name info1, j.jewelry_grams info2, j.jewelry_karat info3, j.jewelry_material info4 FROM property p INNER JOIN user ua INNER JOIN assumption a ON ua.id = a.userId INNER JOIN assumer aa ON aa.id = a.assumerId INNER JOIN user uo ON p.userId = uo.id AND p.id = a.propertyId INNER JOIN jewelry j ON j.propertyId = p.id WHERE a.isActive = 0 AND a.isAcceptedAssumer = 0
+    `;
+    const unsuccessful_transactions = await this.assumptionEntity.query(query);
+
+    // console.log(unsuccessful_transactions);
+
+    return {
+      code: 200,
+      status: 1,
+      message: 'Unsuccessful Transactions',
+      data: unsuccessful_transactions,
+    }
+  }
 }

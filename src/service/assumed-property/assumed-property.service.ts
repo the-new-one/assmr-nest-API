@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Notifications } from 'src/entity/notifications/Notifications';
 import {
   Assumer,
   Assumption,
@@ -13,78 +14,18 @@ export class AssumedPropertyService {
     @InjectRepository(Assumer) private assumerEntity: Repository<Assumer>,
     @InjectRepository(Assumption)
     private assumptnEntity: Repository<Assumption>,
+    @InjectRepository(Notifications)
+    private notificationEntity: Repository<Notifications>,
   ) {}
   async getAllAssumedProperty(param: {
     userId: number;
   }): Promise<ResponseData<AssumptionInformationModel[]>> {
     const { userId } = param;
-    const vehicleRecords = await this.assumerEntity
-      .createQueryBuilder('assumer')
-      .innerJoin('assumption', 'assumption')
-      .innerJoin('user', 'user')
-      .innerJoin('vehicle', 'vehicle')
-      .innerJoin('vehicle_image', 'vehicle_image')
-      .innerJoin('property', 'property')
-      .select(['user', 'assumption', 'vehicle', 'vehicle_image', 'property'])
-      // .distinct()
-      .where('user.id = assumption.propowner_id')
-      .andWhere('property.id = assumption.propertyId')
-      .andWhere('vehicle.userId = user.id')
-      .andWhere('vehicle.id = vehicle_image.vehicleId')
-      .andWhere('assumer.userId =:userId', { userId })
-      .andWhere('assumption.userId =:userId', { userId })
-      .andWhere('assumption.propertyId = vehicle.propertyId')
-      .andWhere('assumption.isActive =:isActive', { isActive: '1' })
-      .groupBy('assumer.userId')
-      // .getQuery();
-      .execute();
-    // console.log(assumed_records);
-    const realestateRecords = await this.assumerEntity
-      .createQueryBuilder('assumer')
-      .innerJoinAndSelect('assumption', 'assumption')
-      .innerJoinAndSelect('user', 'user')
-      .innerJoinAndSelect('realeststate', 'realeststate')
-      .innerJoinAndSelect('property', 'property')
-      .select(['user', 'assumption', 'realeststate', 'property'])
-      .distinct()
-      .where('property.property_type = "realestate"')
-
-      .andWhere('user.id = assumption.propowner_id')
-      .andWhere('property.id = assumption.propertyId')
-      .andWhere('realeststate.userId = user.id')
-      .andWhere('assumption.propertyId = realeststate.propertyId')
-      .andWhere('assumer.userId =:userId', { userId })
-      .andWhere('assumption.userId =:userId', { userId })
-      .andWhere('assumption.isActive =:isActive', { isActive: '1' })
-      .groupBy('assumption.propertyId')
-      .getRawMany();
-
-    const jewelryRecords = await this.assumerEntity
-      .createQueryBuilder('assumer')
-      .innerJoin('assumption', 'assumption')
-      .innerJoin('user', 'user')
-      .innerJoin('jewelry', 'jewelry')
-      .innerJoin('property', 'property')
-      // .distinct()
-      .where('user.id = assumption.propowner_id')
-      .andWhere('property.id = assumption.propertyId')
-      .andWhere('jewelry.userId = user.id')
-      .andWhere('assumer.userId =:userId', { userId })
-      .andWhere('assumption.userId =:userId', { userId })
-      .andWhere('assumption.propertyId = jewelry.propertyId')
-      .andWhere('property.userId = user.id')
-      .andWhere('assumption.isActive =:isActive', { isActive: '1' })
-      .select(['assumer', 'assumption', 'user', 'jewelry', 'property'])
-      .groupBy('assumer.userId')
-      .execute();
-    // console.log(jewelryRecords);
-
-    const combinedRecords = [
-      ...vehicleRecords,
-      ...realestateRecords,
-      ...jewelryRecords,
-    ];
-    console.log(combinedRecords);
+    const query = `SELECT CONCAT(u.lastname, ' ', u.firstname, ' ', u.middlename) as owner, u.contactno contactno, CONCAT(u.barangay, u.municipality, u.province) address, u.image as image, a.isActive, a.isAcceptedAssumer, a.id assumerId, p.id as propertyId, a.propowner_id, a.assumerId, p.property_type FROM property p INNER JOIN user u INNER JOIN assumption a ON p.userId = u.id AND p.id = a.propertyId WHERE a.userId = '${userId}' AND a.isActive = 1 GROUP BY a.propertyId
+    `;
+    // console.log(query);
+    const combinedRecords = await this.assumptnEntity.query(query);
+    // console.log(combinedRecords);
     return {
       code: 200,
       status: 1,
@@ -94,6 +35,8 @@ export class AssumedPropertyService {
   }
   async removeRemovedAssumption(
     assumerID: number,
+    propertyOwnerId: number,
+    propertyId: number,
   ): Promise<ResponseData<string>> {
     this.assumptnEntity
       .createQueryBuilder('assumption')
@@ -102,6 +45,21 @@ export class AssumedPropertyService {
         isActive: '0',
       })
       .where('assumption.assumerId =:assumerID', { assumerID })
+      .execute();
+
+    this.notificationEntity
+      .createQueryBuilder()
+      .insert()
+      .into(Notifications)
+      .values({
+        userNotifReceiverId: propertyOwnerId,
+        userNotifSenderId: assumerID,
+        notificationType: 'assumer-remove-assumption',
+        notificationContent: 'Assumer cancel his / her assumption',
+        isSeen: 'false',
+        notificationDate: new Date(),
+        uniqueId: propertyId.toString(),
+      })
       .execute();
 
     return {

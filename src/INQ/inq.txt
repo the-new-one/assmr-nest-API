@@ -69,3 +69,17 @@ assume balik, pero ang nahitabo is nag error siya na dili na pwede maka assume. 
 Dec. 05, 2023
 1 D) ni assume siya then gi remove niya, then gi assume niya balik then wala na siya sa assumer list gg.
 2 D) list all users.
+
+Dec. 06, 2023 fixes
+1 D) Sa pag accept ni property sa certain na assumer kay working / fixed, before dili siya ma accept tungod ra sa propertyId
+2) Notifications
+pre calculated text
+finish transactions
+3) npx react-native start --reset-cache
+4) npm cache clean --force (clear the cache of your package)
+5)update your npm npm install -g
+6) npm install react-native-html-to-pdf --save --force and npm install react-native-printer --save --force
+
+Issue Dec, 10 2023
+1) Counter sa total assumer kay sayop sa House and lot
+2) Add purchased branch label if vehicle, then sa jewelry kay pawnshop name

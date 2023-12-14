@@ -9,6 +9,8 @@ import {
   UserSigninModel,
 } from 'src/models/user/UserModel';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
+import { Company } from 'src/entity/company/Company';
 
 @Injectable()
 export class SigninService {
@@ -17,6 +19,7 @@ export class SigninService {
     @InjectRepository(Account) private accountCred: Repository<Account>,
     @InjectRepository(UserSubscription)
     private userSub: Repository<UserSubscription>,
+    @InjectRepository(Company) private companyEntity: Repository<Company>,
   ) {}
   async verifyUserCredentials(
     credentials: UserSigninModel,
@@ -33,14 +36,27 @@ export class SigninService {
         const accountCred = await this.accountCred.findOne({
           select: {
             userId: true,
+            password: true,
           },
           where: {
             email: credentials.email,
-            password: credentials.password,
           },
         });
 
         if (!accountCred) {
+          return {
+            code: 1,
+            status: 500,
+            message: 'Credentials is invalid.',
+            data: null,
+          };
+        }
+        const hashedPassword = await bcrypt.compareSync(
+          credentials.password,
+          accountCred.password,
+        );
+
+        if (!accountCred || !hashedPassword) {
           return {
             code: 0,
             status: 401,
@@ -55,6 +71,7 @@ export class SigninService {
               contactno: '',
               subscription: null,
               image: '',
+              companyType: '',
             },
           };
         }
@@ -74,6 +91,15 @@ export class SigninService {
           },
           where: {
             id: accountCred.userId,
+          },
+        });
+
+        const companyResult = await this.companyEntity.findOne({
+          select: {
+            company_type: true,
+          },
+          where: {
+            userId: result.id,
           },
         });
 
@@ -118,11 +144,12 @@ export class SigninService {
             contactno: result.contactno,
             subscription: subscriptionInfo ?? false,
             image: result.image,
+            companyType: companyResult ? companyResult.company_type : '',
           },
         };
       }
     } catch (err) {
-      // console.log(err);
+      console.log(err);
 
       return new Promise((resolve, reject) => {
         resolve({
@@ -139,6 +166,7 @@ export class SigninService {
             contactno: '',
             subscription: null,
             image: '',
+            companyType: '',
           },
         });
       });
@@ -158,17 +186,43 @@ export class SigninService {
       province,
       barangay,
       email,
-      password,
+      password, // oldPassword
+      newPassword, // newPassword
+      shouldUpdatePassword,
     } = params;
+    const accountExists = await this.accountCred.findOne({
+      select: {
+        password: true,
+        email: true,
+      },
+      where: {
+        email,
+      },
+    });
+    const isValidCredentials = await bcrypt.compare(
+      password,
+      accountExists.password,
+    );
+    if (!isValidCredentials && parseInt(shouldUpdatePassword) > 0) {
+      return {
+        code: 500,
+        status: 1,
+        message: 'User credential is invalid',
+        data: 'User credential is invalid',
+      };
+    }
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    this.accountCred
-      .createQueryBuilder('account')
-      .update(Account)
-      .set({
-        password: password,
-      })
-      .where('account.email =:email', { email })
-      .execute();
+    if (parseInt(shouldUpdatePassword) > 0) {
+      this.accountCred
+        .createQueryBuilder('account')
+        .update(Account)
+        .set({
+          password: hashedPassword,
+        })
+        .where('account.email =:email', { email })
+        .execute();
+    }
 
     this.userCredential
       .createQueryBuilder('user')

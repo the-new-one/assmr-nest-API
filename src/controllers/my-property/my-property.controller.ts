@@ -99,11 +99,19 @@ export class MyPropertyController {
   ) {
     return this.propertyService.listAssumerOfMyProperty(param);
   }
-  @Patch('remove-assumer/:assumerId')
+  @Patch('remove-assumer/:assumerId/:assumerUserId/:activeUserId/:propertyId')
   removeAssumer(
     @Param('assumerId') assumerId: number,
+    @Param('assumerUserId') assumerUserId: number,
+    @Param('activeUserId') activeUserId: number,
+    @Param('propertyId') propertyId: number,
   ): Promise<ResponseData<string>> {
-    return this.propertyService.removeAssumer(assumerId);
+    return this.propertyService.removeAssumer(
+      assumerId,
+      assumerUserId,
+      activeUserId,
+      propertyId,
+    );
   }
   @Post('jewelry')
   @UseInterceptors(
@@ -224,7 +232,13 @@ export class MyPropertyController {
   }
   @Post('/accept-certain-assumer')
   acceptCertainAssumer(
-    @Body() param: { assumerID: number; propertyID: number },
+    @Body()
+    param: {
+      assumerID: number;
+      propertyID: number;
+      assumerUserId: number;
+      activeUserId: number;
+    },
   ) {
     return this.propertyService.acceptCertainAssumer(param);
   }

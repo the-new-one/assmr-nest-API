@@ -27,6 +27,7 @@ export interface ActiveUserCredentialsModel {
   contactno: string;
   subscription: any;
   image: string;
+  companyType: string;
 } // basta accepted ang credentials sa user mao ni e return na mga info
 
 export interface VehicleOwnerModel {
@@ -48,6 +49,7 @@ export interface VehicleOwnerModel {
   delinquent: string;
   description: string;
   modeOfPayment: string;
+  branchPurchase: string;
 } // used for uploading vehicle property
 
 export interface UpdateUserInformationModel extends UserSigninModel {
@@ -58,6 +60,9 @@ export interface UpdateUserInformationModel extends UserSigninModel {
   municipality: string;
   province: string;
   barangay: string;
+  newPassword: string;
+  oldPassword: string;
+  shouldUpdatePassword: any;
 }
 
 export interface JewelryOwnerModel {
@@ -78,6 +83,7 @@ export interface JewelryOwnerModel {
   remainingMonthsToPaid: string;
   assumePrice: string;
   monthlyPayment: string;
+  pawnshopName: string;
 }
 export interface RealestateOwnerModel {
   email: string;

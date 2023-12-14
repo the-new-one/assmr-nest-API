@@ -40,4 +40,8 @@ export class AdminController {
   getAllUserList() {
     return this.adminService.getAllUserList();
   }
+  @Get('/unsuccessful-transactions')
+  getAllUnsuccessfulTransactions() {
+    return this.adminService.getAllUnsuccessfulTransactions();
+  }
 }

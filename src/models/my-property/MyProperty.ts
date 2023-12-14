@@ -72,6 +72,7 @@ export interface UpdateVehicleInformationModel {
   modeOfPayment: string;
   delinquent: string;
   description: string;
+  branchPurchase: string;
 }
 
 export interface MyAssumedProperty {
@@ -249,6 +250,7 @@ export interface UpdateJewelryInformationModel {
   remainingMonthsToPaid: string;
   assumePrice: string;
   monthlyPayment: string;
+  pawnShopName: string;
 }
 
 export interface MyRealestatePropertyModel {

@@ -13,6 +13,10 @@ export class Company {
   @Column({
     length: 50,
   })
+  @Column({
+    length: 20,
+  })
+  company_type: string;
   company_branch: string;
   @Column({
     length: 250,

@@ -55,6 +55,10 @@ export class Vehicle {
     length: 5,
   })
   isDropped: string;
+  @Column({
+    length: 50,
+  })
+  branchPurchase: string;
 
   @ManyToOne((type) => User, (user) => user.vehicles)
   user: User;
