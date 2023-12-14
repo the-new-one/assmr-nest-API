@@ -96,12 +96,12 @@ export class AssumedPropertyService {
     assumerID: number,
   ): Promise<ResponseData<string>> {
     this.assumptnEntity
-      .createQueryBuilder('assumer')
+      .createQueryBuilder('assumption')
       .update(Assumption)
       .set({
         isActive: '0',
       })
-      .where('assumer.id =:assumerID', { assumerID })
+      .where('assumption.assumerId =:assumerID', { assumerID })
       .execute();
 
     return {

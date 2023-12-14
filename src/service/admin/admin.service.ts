@@ -279,7 +279,7 @@ export class AdminService {
     const feedBack = await this.userFeedbackEntity
       .createQueryBuilder('feeds')
       .execute();
-    console.log(feedBack);
+    // console.log(feedBack);
     return {
       code: 200,
       status: 1,
@@ -352,7 +352,7 @@ export class AdminService {
     dateTo: string;
   }): Promise<ResponseData<any>> {
     const { dateFrom, dateTo } = filteredParams;
-    console.log(filteredParams)
+    // console.log(filteredParams)
     let result;
     if (dateFrom && dateTo) {
       result = await this.propertyEntity
@@ -382,12 +382,35 @@ export class AdminService {
         .groupBy('DATE_FORMAT(posted_date, "%Y-%m-%d")')
         .execute();
     }
-    console.log(result);
+    // console.log(result);
     return {
       code: 200,
       status: 1,
       message: 'Unique records.',
       data: result,
+    };
+  }
+  async getAllSuccessFullyAssumedProperty(): Promise<ResponseData<any>> {
+    const sqlVehicle =
+      'SELECT asmptn.id,asmptn.userId,asmptn.propertyId,asmptn.isActive,asmptn.isAcceptedAssumer,asmptn.transaction_date, p.*, owner.*, v.*  FROM assumption asmptn INNER JOIN property p ON asmptn.propertyId = p.id INNER JOIN vehicle v ON v.propertyId = p.id INNER JOIN vehicle_image vi ON v.id = vi.vehicleId INNER JOIN user owner ON owner.id = p.userId AND owner.id = asmptn.propowner_id WHERE asmptn.isAcceptedAssumer = 1';
+
+    const sqlRealestate =
+      'SELECT asmptn.id,asmptn.userId,asmptn.propertyId,asmptn.isActive,asmptn.isAcceptedAssumer,asmptn.transaction_date, p.*, owner.*, r.*  FROM assumption asmptn INNER JOIN property p ON asmptn.propertyId = p.id INNER JOIN realeststate r ON r.propertyId = p.id INNER JOIN user owner ON owner.id = p.userId INNER JOIN house h ON h.realestateId = r.id INNER JOIN house_and_lot hal ON hal.realestateId = r.id INNER JOIN lot l ON l.realestateId = r.id WHERE asmptn.isAcceptedAssumer = 1';
+    
+      const sqlJewelry =
+      'SELECT asmptn.id,asmptn.userId,asmptn.propertyId,asmptn.isActive,asmptn.isAcceptedAssumer,asmptn.transaction_date, p.*, owner.*, j.*  FROM assumption asmptn INNER JOIN property p ON asmptn.propertyId = p.id INNER JOIN user owner ON owner.id = p.userId INNER JOIN jewelry j ON j.propertyId = p.id WHERE asmptn.isAcceptedAssumer = 1';
+
+    const vehicleRec = await this.assumptionEntity.query(sqlVehicle);
+    const realestateRec = await this.assumptionEntity.query(sqlRealestate);
+    const jewelryRec = await this.assumptionEntity.query(sqlJewelry);
+
+    const records = [...vehicleRec, ...realestateRec, ...jewelryRec];
+
+    return {
+      code: 200,
+      status: 1,
+      message: 'All successfull assumption',
+      data: records,
     };
   }
 }
