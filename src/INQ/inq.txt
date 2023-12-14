@@ -25,3 +25,43 @@ if individual user ra kay limit to 3times pwede maka post
 Nov. 25, 2023
 1) Change from Deliquent to Delinquent
 2) in assumption of property upon viewing the item it should have a carousel effect 
+
+Dec. 3, 2023
+
+1 D)Viewing of property dili siya mo carousel
+2 D)Dashboard walay / sayop ang bar graphs
+3 D)Ma wala ang upload/post button sa Vehicle na properties, basta mo change ka sa view from realestate, jewelry to vehicle
+
+4 D)mo error ang side sa house property if 3 kabuok ang image e post 'Properties Dashboard', apil pud ang sa my realestate na properties
+5 D)dili mo work ang subscription, ang mahitabo mo error ta siya kay ka 3 na siya naka post
+6 D)ang searching sa realestate, specifically sa house na property kay ma stop siya or mo crash ang app., sa browsing sa property na side
+7)add localstroage para login na daan ang user.
+8) sa pag assume na records siya sa vehicle na property, bisag realestate unta to, 'problema ni sa dashboard ra na side.'
+9) ang nahitabo kay ni assume sa house and lot, then na 
+10) sa pag query ang mahitabo kay gi cancel sa property onwer ang assumption sa user, then pwede ra unta siya maka 
+assume balik, pero ang nahitabo is nag error siya na dili na pwede maka assume. 'usba ni'
+11) sayop ang notification ang nahitabo imbes ang property ang maka receive ug notifications ang kato na hinoon ang assumer
+12) wala na update ang subscriptions bisag gi set to 2024. 'sayop ni'
+13 D) change message from 'Assumed' to 'Inquired' when assuming a property.
+15 D) Remove 'downpayment textfields' in the from 'hide lang'
+    15.1 D) 'Months Paid / Installmentpaid' to 'Months paid'
+16 D) Need ug back button sa uploading of properties <>;
+17 D) BUGS sa jewelry maka post gihapon siya even naka about na sa maxLimit(3) ang ma post niya 
+18) In accepting an assumer, kinahanglan ma disabled ang button na 'details' ug ma change ang text label to 'accepted'
+19) BUGS gi cancel ni assummer ang assumption pero wala na wala ang property na gi assume niya.
+20) BUGS wala sa messages ang latest user chatts / messages.
+    20.1) sa display messages lists.
+21 D) adding margin top sa inquiries lists, ug add sa inquiries descriptions.
+22) sa admin na side kay wala na update ang subscription ni ronald badayos bisag 'subscribed' na unta siya
+ 22.1) wala sab ang mga list of successfully assumed sa admin
+
+23) sa admin na subscription form sa upon registration nila
+    23.1) ang una kay card na per month na subscription
+        23.1.1) 3k per/month
+    23.2) ang igka duha na card kay per year na subscription
+        23.2.1) 33k per/year
+    23.3) if company user siya dili siya maka assume igko ra maka post.
+    23.4) and changed the button from 'save' to 'subscribed'
+
+24) kung plain user raka ang subscription kay;
+    24.1) 999 per month

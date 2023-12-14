@@ -17,7 +17,13 @@ export class SignupService {
     @InjectRepository(Company) private companyEntity: Repository<Company>,
   ) {}
   async createUser(userForm: any): Promise<ResponseData<[]>> {
-    const { userType, contactno, email } = userForm;
+    const {
+      userType,
+      subscriptionPlan,
+      subscriptionExpirationDate,
+      contactno,
+      email,
+    } = userForm;
     const userExists = await checkEmailExists(this.accountEntity, email);
 
     switch (userType) {
@@ -134,9 +140,9 @@ export class SignupService {
           })
           .execute();
         const registrationDate = new Date();
-        const expirationnDate = new Date();
-        expirationnDate.setMonth(registrationDate.getMonth() + 1);
-        const subscriptionExpiry = expirationnDate;
+        // const expirationnDate = new Date();
+        // expirationnDate.setMonth(registrationDate.getMonth() + 1);
+        // const subscriptionExpiry = expirationnDate;
 
         this.companyEntity
           .createQueryBuilder('company')
@@ -165,7 +171,8 @@ export class SignupService {
             subscription_date: registrationDate,
             userType,
             isSubscribed: true,
-            subscription_expiry: subscriptionExpiry,
+            subscription_expiry: subscriptionExpirationDate,
+            subscriptionPlan,
           })
           .execute();
 

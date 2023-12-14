@@ -12,6 +12,10 @@ export class UserSubscription {
     length: 20,
   })
   userType: string;
+  @Column({
+    length: 20,
+  })
+  subscriptionPlan: string;
   @Column()
   isSubscribed: boolean;
   @Column()

@@ -26,7 +26,7 @@ export class DashboardService {
     const totalPostedVehicle = await this.vehicleRepo
       .createQueryBuilder('vehicle')
       .getCount();
-    const totalPostedRealestate = await this.jewelryEntity
+    const totalPostedRealestate = await this.realestateEntity
       .createQueryBuilder('realestate')
       .getCount();
     const totalPostedJewelry = await this.jewelryEntity
