@@ -21,7 +21,7 @@ export class AssumedPropertyService {
     userId: number;
   }): Promise<ResponseData<AssumptionInformationModel[]>> {
     const { userId } = param;
-    const query = `SELECT CONCAT(u.lastname, ' ', u.firstname, ' ', u.middlename) as owner, u.contactno contactno, CONCAT(u.barangay, u.municipality, u.province) address, u.image as image, a.isActive, a.isAcceptedAssumer, a.id assumerId, p.id as propertyId, a.propowner_id, a.assumerId, p.property_type FROM property p INNER JOIN user u INNER JOIN assumption a ON p.userId = u.id AND p.id = a.propertyId WHERE a.userId = '${userId}' AND a.isActive = 1 GROUP BY a.propertyId
+    const query = `SELECT u.id, CONCAT(u.lastname, ' ', u.firstname, ' ', u.middlename) as owner, u.contactno contactno, u.email, CONCAT(u.barangay, u.municipality, u.province) address, u.image as image, a.isActive, a.isAcceptedAssumer, a.id assumerId, p.id as propertyId, a.propowner_id, a.assumerId, p.property_type FROM property p INNER JOIN user u INNER JOIN assumption a ON p.userId = u.id AND p.id = a.propertyId WHERE a.userId = '${userId}' AND a.isActive = 1 GROUP BY a.propertyId
     `;
     // console.log(query);
     const combinedRecords = await this.assumptnEntity.query(query);

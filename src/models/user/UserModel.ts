@@ -28,6 +28,7 @@ export interface ActiveUserCredentialsModel {
   subscription: any;
   image: string;
   companyType: string;
+  branch: string;
 } // basta accepted ang credentials sa user mao ni e return na mga info
 
 export interface VehicleOwnerModel {
